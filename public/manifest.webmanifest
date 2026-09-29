@@ -1,0 +1,10 @@
+{
+  "name": "Sous",
+  "short_name": "Sous",
+  "description": "Track your fridge and pantry, get recipe ideas from what you have.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f7f4ee",
+  "theme_color": "#2f5d50",
+  "icons": [{ "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml" }]
+}
