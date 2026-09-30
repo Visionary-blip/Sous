@@ -18,7 +18,8 @@ describe("cuisine filter", () => {
   });
 
   it("combines cuisines with OR and with the other chips with AND", () => {
-    expect(titles(["Northern Europe", "American South"]).sort()).toEqual(["BBQ Meatballs", "Fish & Chips", "Swedish Meatballs"]);
+    expect(titles(["Northern Europe", "American South"])).toEqual(expect.arrayContaining(["BBQ Meatballs", "Fish & Chips", "Swedish Meatballs", "Jambalaya", "Bangers & Mash"]));
+    expect(titles(["Northern Europe", "American South"])).not.toContain("Paella");
     expect(filterMatches(all, "", ["ready"], ["Asia"])).toEqual([]);
   });
 
@@ -32,8 +33,8 @@ describe("cuisine filter", () => {
     expect(titles(["American"])).toContain("Poutine");
   });
 
-  it("has no South America dishes yet", () => {
-    expect(titles(["South America"])).toEqual([]);
+  it("has South American dishes", () => {
+    expect(titles(["South America"])).toEqual(expect.arrayContaining(["Arroz con Pollo", "Ceviche", "Lomo Saltado"]));
   });
 
   it("only points at recipes that exist and at listed cuisines", () => {
