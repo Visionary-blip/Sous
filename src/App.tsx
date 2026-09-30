@@ -4,7 +4,9 @@ import { CookingBar } from "@/components/cooking-bar";
 import { Home } from "@/components/home";
 import { RecipeScreen } from "@/components/recipe-screen";
 import { RECIPES } from "@/data/recipes";
-import { matchAll } from "@/lib/match";
+import { matchAll, type RecipeMatch } from "@/lib/match";
+import { consume, applyChanges } from "@/lib/consume";
+import { FinishUp, type FinishUpRow } from "@/components/finish-up";
 import type { RecipeView } from "@/lib/recipe-view";
 import { useClassics } from "@/lib/use-classics";
 import { useCooking } from "@/lib/use-cooking";
@@ -33,15 +35,11 @@ export default function App() {
   const [view, setView] = useState<RecipeView>(null);
   const classics = useClassics();
   const cook = useCooking();
+  const [finishUp, setFinishUp] = useState<FinishUpRow[]>([]);
 
-  function flash(msg: string) {
+  function flash(msg: string, ms = 2500) {
     setToast(msg);
-    window.setTimeout(() => setToast(null), 2500);
-  }
-
-  function markCooked(usedIds: string[]) {
-    setGroceries((prev) => prev.filter((g) => !usedIds.includes(g.id)));
-    flash("Nice! Used-up items removed from your pantry.");
+    window.setTimeout(() => setToast(null), ms);
   }
 
   const matches = useMemo(() => matchAll(RECIPES, groceries, staples), [groceries, staples]);
@@ -49,8 +47,12 @@ export default function App() {
   const cookingMatch = byId(cook.cooking?.id);
   const opened = byId(view?.id);
 
-  function finishCooking(usedIds: string[]) {
-    markCooked(usedIds);
+  // Subtract what the recipe used; anything Sous can't work out is handed to the person.
+  function complete(match: RecipeMatch) {
+    const { changes, unresolved } = consume(match);
+    setGroceries((prev) => applyChanges(prev, changes));
+    if (changes.length) flash(`Used ${changes.map((c) => c.used).join(", ")}`, 4500);
+    setFinishUp(unresolved.map((u) => ({ id: u.item.id, needed: u.needed })));
     cook.stop();
   }
 
@@ -78,7 +80,7 @@ export default function App() {
 
       <main>
         {opened ? (
-          <RecipeScreen match={opened} classics={classics} cook={cook} onBack={() => setView(null)} onCooked={finishCooking} />
+          <RecipeScreen match={opened} classics={classics} cook={cook} onBack={() => setView(null)} onComplete={complete} />
         ) : (
           <>
             {current === "home" && <Home matches={matches} classics={classics.classics} groceries={groceries} onOpen={openRecipe} onBrowse={() => goTo("recipes")} onPantry={() => goTo("pantry")} />}
@@ -98,9 +100,11 @@ export default function App() {
           onStep={(delta) => cook.step(delta, cookingMatch.recipe.steps.length)}
           onLike={() => classics.like(cook.cooking!.id)}
           onStop={cook.stop}
-          onCooked={() => finishCooking(cookingMatch.usesGroceries.map((g) => g.id))}
+          onComplete={() => complete(cookingMatch)}
         />
       )}
+
+      {finishUp.length > 0 && <FinishUp rows={finishUp} groceries={groceries} setGroceries={setGroceries} onClose={() => setFinishUp([])} />}
 
       {toast && (
         <div className="toast" role="status">
