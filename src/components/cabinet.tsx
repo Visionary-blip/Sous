@@ -1,8 +1,16 @@
 import { useState } from "react";
-import { STAPLE_CATEGORIES } from "../data/staples";
-import { normalize } from "../lib/ingredients";
-import { newId } from "../lib/storage";
-import type { Staple, StapleCategory } from "../types";
+import { STAPLE_CATEGORIES } from "@/data/staples";
+import { normalize } from "@/lib/ingredients";
+import { newId } from "@/lib/storage";
+import type { Staple } from "@/types";
+
+// Custom staples land here now that the add form has no category picker.
+const NEW_STAPLE_CATEGORY = "Spices";
+
+/** "Sauces & Condiments" becomes "sauces", the hook for that category's colour in the stylesheet. */
+function colorClass(category: string): string {
+  return category.split(" ")[0].toLowerCase();
+}
 
 interface Props {
   staples: Staple[];
@@ -11,8 +19,6 @@ interface Props {
 
 export function Cabinet({ staples, setStaples }: Props) {
   const [name, setName] = useState("");
-  const [category, setCategory] = useState<StapleCategory>("Spices");
-  const [filter, setFilter] = useState("");
 
   function toggle(id: string) {
     setStaples((prev) => prev.map((s) => (s.id === id ? { ...s, inStock: !s.inStock } : s)));
@@ -26,7 +32,7 @@ export function Cabinet({ staples, setStaples }: Props) {
     if (existing) {
       setStaples((prev) => prev.map((s) => (s.id === existing.id ? { ...s, inStock: true } : s)));
     } else {
-      setStaples((prev) => [...prev, { id: newId(), name: n, category, inStock: true }]);
+      setStaples((prev) => [...prev, { id: newId(), name: n, category: NEW_STAPLE_CATEGORY, inStock: true }]);
     }
     setName("");
   }
@@ -36,7 +42,6 @@ export function Cabinet({ staples, setStaples }: Props) {
   }
 
   const inStock = staples.filter((s) => s.inStock).length;
-  const q = filter.trim().toLowerCase();
 
   return (
     <section>
@@ -50,38 +55,19 @@ export function Cabinet({ staples, setStaples }: Props) {
           <span>Add a staple</span>
           <input value={name} onChange={(e) => setName(e.target.value)} placeholder="e.g. Za'atar" />
         </label>
-        <div className="row">
-          <label className="field">
-            <span>Category</span>
-            <select value={category} onChange={(e) => setCategory(e.target.value as StapleCategory)}>
-              {STAPLE_CATEGORIES.map((c) => (
-                <option key={c}>{c}</option>
-              ))}
-            </select>
-          </label>
-        </div>
         <button className="primary" type="submit" disabled={!name.trim()}>
           Add
         </button>
       </form>
 
-      <input
-        className="search"
-        type="search"
-        value={filter}
-        onChange={(e) => setFilter(e.target.value)}
-        placeholder="Filter staples…"
-        aria-label="Filter staples"
-      />
-
       {STAPLE_CATEGORIES.map((cat) => {
         const items = staples
-          .filter((s) => s.category === cat && (!q || s.name.toLowerCase().includes(q)))
+          .filter((s) => s.category === cat)
           .sort((a, b) => a.name.localeCompare(b.name));
         if (!items.length) return null;
         const have = items.filter((s) => s.inStock).length;
         return (
-          <div key={cat} className="group">
+          <div key={cat} className={`group cat-${colorClass(cat)}`}>
             <h2>
               {cat}{" "}
               <span className="count">
