@@ -37,7 +37,7 @@ export function Home({ matches, classics, groceries, onOpen, onBrowse, onPantry 
         <div className="shelf-block">
           <div className="sec-h">
             <h2>Expiring soon</h2>
-            <p>Tap to see them in your Pantry</p>
+            <p>Tap to see them in your Fridge</p>
           </div>
           <div className="deck">
             {soon.map((g) => (
@@ -51,7 +51,7 @@ export function Home({ matches, classics, groceries, onOpen, onBrowse, onPantry 
       )}
       {shelves.length === 0 && (
         <p className="empty">
-          Add a few groceries in the <strong>Pantry</strong> tab and Sous will line up what to cook.
+          Add a few groceries in the <strong>Fridge</strong> tab and Sous will line up what to cook.
         </p>
       )}
       {shelves.map((s) => (

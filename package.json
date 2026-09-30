@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.1.0",
   "type": "module",
-  "description": "Sous — track your fridge and pantry, get recipe ideas from what you have.",
+  "description": "Sous — track your fridge and cabinet, get recipe ideas from what you have.",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",

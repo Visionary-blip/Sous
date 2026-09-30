@@ -22,7 +22,7 @@ type Tab = "home" | "pantry" | "cabinet" | "recipes";
 
 const TABS: { id: Tab; label: string }[] = [
   { id: "home", label: "Home" },
-  { id: "pantry", label: "Pantry" },
+  { id: "pantry", label: "Fridge" },
   { id: "cabinet", label: "Cabinet" },
   { id: "recipes", label: "Recipes" },
 ];

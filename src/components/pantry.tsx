@@ -91,7 +91,7 @@ export function Pantry({ groceries, setGroceries }: Props) {
 
       {groceries.length === 0 && (
         <p className="empty">
-          Your pantry is empty. Add what's in your fridge, freezer and shelves to get recipe ideas.
+          Your fridge is empty. Add what you have — fridge, freezer or shelves — to get recipe ideas.
         </p>
       )}
 

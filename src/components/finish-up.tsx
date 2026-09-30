@@ -23,7 +23,7 @@ export function FinishUp({ rows, groceries, setGroceries, onClose }: Props) {
   });
 
   return (
-    <div className="modal" role="dialog" aria-modal="true" aria-label="Finish up your pantry">
+    <div className="modal" role="dialog" aria-modal="true" aria-label="Finish up your fridge">
       <div className="card modal-body">
         <h2 className="screen-title">Finish up</h2>
         <p className="muted">Sous couldn't work these out. Remove each one, or tell it how much you used.</p>
@@ -79,7 +79,7 @@ function FinishUpItem({ item, needed, setGroceries }: ItemProps) {
         <button className="icon" onClick={() => setOpen(!open)} aria-expanded={open} aria-label={`Enter how much ${item.name} you used`}>
           −
         </button>
-        <button className="icon" onClick={() => update(null)} aria-label={`Remove ${item.name} from pantry`}>
+        <button className="icon" onClick={() => update(null)} aria-label={`Remove ${item.name} from fridge`}>
           ✕
         </button>
       </div>

@@ -1,7 +1,7 @@
 {
   "name": "Sous",
   "short_name": "Sous",
-  "description": "Track your fridge and pantry, get recipe ideas from what you have.",
+  "description": "Track your fridge and cabinet, get recipe ideas from what you have.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#0d0b0a",
