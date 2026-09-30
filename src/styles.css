@@ -1016,3 +1016,69 @@ button.icon.on {
   align-items: center;
   gap: 8px;
 }
+
+/* Suggestion mode: dishes are bars that open a list of links, stacked in a column. */
+.suggest-mode .shelf,
+.suggest-mode .grid {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  overflow: visible;
+}
+
+.sbar-head {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-areas: "name sign" "note sign";
+  align-items: center;
+  width: 100%;
+  padding: 12px 14px;
+  border: none;
+  color: #fff;
+  text-align: left;
+  text-shadow: 0 1px 6px rgb(0 0 0 / 0.35);
+}
+
+.sbar-head strong {
+  grid-area: name;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.sbar-head small {
+  grid-area: note;
+  opacity: 0.85;
+}
+
+.sbar-head span {
+  grid-area: sign;
+  font-size: 1.3rem;
+}
+
+.sbar.plain .sbar-head {
+  background: transparent;
+  color: var(--text);
+  text-shadow: none;
+  padding: 0;
+}
+
+.sbar-body {
+  padding: 10px 14px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-top: none;
+}
+
+.sbar-links {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.sbar-links a {
+  color: var(--accent);
+  font-weight: 600;
+}

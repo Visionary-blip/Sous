@@ -2,6 +2,8 @@ import { useMemo, useState } from "react";
 import { Cabinet } from "./components/cabinet";
 import { CookingBar } from "@/components/cooking-bar";
 import { Home } from "@/components/home";
+import { ClassicsContext } from "@/lib/classics-context";
+import { SUGGESTION_MODE } from "@/lib/mode";
 import { RecipeScreen } from "@/components/recipe-screen";
 import { RECIPES } from "@/data/recipes";
 import { matchAll, type RecipeMatch } from "@/lib/match";
@@ -73,7 +75,8 @@ export default function App() {
   const expiring = groceries.filter((g) => isExpiringSoon(g, new Date())).length;
 
   return (
-    <div className={`app ${cook.cooking ? "cooking" : ""}`}>
+    <ClassicsContext.Provider value={classics}>
+    <div className={`app ${cook.cooking ? "cooking" : ""} ${SUGGESTION_MODE ? "suggest-mode" : ""}`}>
       <header className="top">
         <h1>Sous</h1>
       </header>
@@ -124,5 +127,6 @@ export default function App() {
         ))}
       </nav>
     </div>
+    </ClassicsContext.Provider>
   );
 }

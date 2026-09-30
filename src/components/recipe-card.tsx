@@ -1,10 +1,8 @@
+import { SuggestionBar } from "@/components/suggestion-bar";
 import { coverColors } from "@/lib/cover";
 import type { RecipeMatch } from "@/lib/match";
-
-export function readiness(m: RecipeMatch): { text: string; tone: string } {
-  if (m.missing.length === 0) return { text: "Ready to cook", tone: "ok" };
-  return { text: `Missing ${m.missing.length}`, tone: m.missing.length <= 2 ? "warn" : "muted" };
-}
+import { SUGGESTION_MODE } from "@/lib/mode";
+import { readiness } from "@/lib/readiness";
 
 interface Props {
   match: RecipeMatch;
@@ -13,6 +11,7 @@ interface Props {
 
 /** A square cover with the title on it, like an album, and a one-line status underneath. */
 export function RecipeCard({ match: m, onOpen }: Props) {
+  if (SUGGESTION_MODE) return <SuggestionBar match={m} />;
   const [from, to] = coverColors(m.recipe);
   const note = m.usesExpiring.length > 0 ? `Uses up ${m.usesExpiring.slice(0, 2).map((g) => g.name).join(" & ")}` : readiness(m).text;
   return (

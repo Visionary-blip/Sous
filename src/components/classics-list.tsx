@@ -1,5 +1,7 @@
-import { readiness } from "@/components/recipe-card";
+import { SuggestionBar } from "@/components/suggestion-bar";
 import type { RecipeMatch } from "@/lib/match";
+import { SUGGESTION_MODE } from "@/lib/mode";
+import { readiness } from "@/lib/readiness";
 
 interface Props {
   kind: "liked" | "wish";
@@ -20,10 +22,16 @@ export function ClassicsList({ kind, matches, onOpen, onLike, onRemove }: Props)
     <ul className="list">
       {matches.map((m) => (
         <li key={m.recipe.id} className="list-item">
-          <button className="row-open grow" onClick={() => onOpen(m.recipe.id)}>
-            <strong>{m.recipe.title}</strong>
-            <span className="meta">{describe(m, kind)}</span>
-          </button>
+          {SUGGESTION_MODE ? (
+            <div className="grow">
+              <SuggestionBar match={m} plain />
+            </div>
+          ) : (
+            <button className="row-open grow" onClick={() => onOpen(m.recipe.id)}>
+              <strong>{m.recipe.title}</strong>
+              <span className="meta">{describe(m, kind)}</span>
+            </button>
+          )}
           {kind === "wish" && <button onClick={() => onLike(m.recipe.id)}>Made it, loved it</button>}
           <button className="icon" onClick={() => onRemove(m.recipe.id)} aria-label={`Remove ${m.recipe.title}`}>
             ✕
