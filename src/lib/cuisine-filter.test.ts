@@ -1,0 +1,46 @@
+import { describe, expect, it } from "vitest";
+import { CUISINE_OF, CUISINES } from "@/data/cuisines";
+import { RECIPES } from "@/data/recipes";
+import { matchAll } from "@/lib/match";
+import { filterMatches } from "@/lib/recipe-filters";
+
+const all = matchAll(RECIPES, [], [], new Date(2026, 8, 30));
+const titles = (cuisines: Parameters<typeof filterMatches>[3]) => filterMatches(all, "", [], cuisines).map((m) => m.recipe.title);
+
+describe("cuisine filter", () => {
+  it("shows everything when no cuisine is on", () => {
+    expect(filterMatches(all, "", [], [])).toHaveLength(RECIPES.length);
+  });
+
+  it("keeps only recipes of the chosen cuisine", () => {
+    expect(titles(["Romance"])).toContain("Spaghetti Aglio e Olio");
+    expect(titles(["Romance"])).not.toContain("Smash Burgers");
+  });
+
+  it("combines cuisines with OR and with the other chips with AND", () => {
+    expect(titles(["Northern Europe", "American South"]).sort()).toEqual(["BBQ Meatballs", "Fish & Chips", "Swedish Meatballs"]);
+    expect(filterMatches(all, "", ["ready"], ["Asia"])).toEqual([]);
+  });
+
+  it("groups Asian dishes together, curries and sushi included", () => {
+    const asia = titles(["Asia"]);
+    for (const t of ["Sushi Rolls", "Sushi Bake", "Thai Green Curry", "Japanese Curry", "Butter Chicken", "Fried Rice"]) expect(asia).toContain(t);
+  });
+
+  it("puts Mexican dishes under Central America and poutine under American", () => {
+    expect(titles(["Central America"])).toContain("Ground Beef Tacos");
+    expect(titles(["American"])).toContain("Poutine");
+  });
+
+  it("has no South America dishes yet", () => {
+    expect(titles(["South America"])).toEqual([]);
+  });
+
+  it("only points at recipes that exist and at listed cuisines", () => {
+    const ids = new Set(RECIPES.map((r) => r.id));
+    for (const [id, cuisine] of Object.entries(CUISINE_OF)) {
+      expect(ids.has(id)).toBe(true);
+      expect(CUISINES).toContain(cuisine);
+    }
+  });
+});
