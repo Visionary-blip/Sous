@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+# Launcher for the Sous menu. Resolves its own real location through any symlinks,
+# so it works from any directory and from a link placed on the PATH.
+set -euo pipefail
+
+source="${BASH_SOURCE[0]}"
+while [ -L "$source" ]; do
+  dir="$(cd -P "$(dirname "$source")" && pwd)"
+  source="$(readlink "$source")"
+  [[ "$source" != /* ]] && source="$dir/$source"
+done
+root="$(cd -P "$(dirname "$source")/.." && pwd)"
+
+exec node "$root/scripts/sous-menu.ts" "$@"
