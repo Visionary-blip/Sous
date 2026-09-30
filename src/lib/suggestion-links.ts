@@ -1,9 +1,8 @@
-/** Recipe sites whose own search pages take a `q` query; each was opened in a browser on 2026-09-30. */
+/** Recipe sites whose own search pages take a `q` query; Allrecipes and BBC Good Food were opened in a browser on 2026-09-30; NYT Cooking's search answered 200 to a command-line request but cannot be opened in the in-app browser. */
 const SITES: { label: string; search: (q: string) => string }[] = [
   { label: "Allrecipes", search: (q) => `https://www.allrecipes.com/search?q=${q}` },
-  { label: "Serious Eats", search: (q) => `https://www.seriouseats.com/search?q=${q}` },
   { label: "BBC Good Food", search: (q) => `https://www.bbcgoodfood.com/search?q=${q}` },
-  { label: "Google", search: (q) => `https://www.google.com/search?q=${q}+recipe` },
+  { label: "NYT Cooking", search: (q) => `https://cooking.nytimes.com/search?q=${q}` },
 ];
 
 export interface SuggestionLink {
