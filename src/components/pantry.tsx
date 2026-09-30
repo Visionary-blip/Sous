@@ -1,13 +1,8 @@
 import { useState } from "react";
+import { FOOD_GROUPS, guessGroup } from "../lib/food-groups";
 import { daysUntil } from "../lib/match";
 import { newId, todayIso } from "../lib/storage";
-import type { GroceryItem, Location } from "../types";
-
-const LOCATIONS: { id: Location; label: string }[] = [
-  { id: "fridge", label: "Fridge" },
-  { id: "freezer", label: "Freezer" },
-  { id: "pantry", label: "Pantry shelf" },
-];
+import type { FoodGroup, GroceryItem } from "../types";
 
 function expiryLabel(item: GroceryItem, today: Date): { text: string; tone: string } | null {
   if (!item.expiresOn) return null;
@@ -27,7 +22,8 @@ interface Props {
 export function Pantry({ groceries, setGroceries }: Props) {
   const [name, setName] = useState("");
   const [quantity, setQuantity] = useState("");
-  const [location, setLocation] = useState<Location>("fridge");
+  // null means "let Sous guess from the name"; picking one overrides the guess.
+  const [group, setGroup] = useState<FoodGroup | null>(null);
   const [expiresOn, setExpiresOn] = useState("");
   const today = new Date();
 
@@ -42,7 +38,7 @@ export function Pantry({ groceries, setGroceries }: Props) {
     const added: GroceryItem[] = names.map((n) => ({
       id: newId(),
       name: n,
-      location,
+      group: group ?? guessGroup(n),
       quantity: names.length === 1 && quantity.trim() ? quantity.trim() : undefined,
       expiresOn: expiresOn || undefined,
       addedOn: todayIso(),
@@ -51,14 +47,15 @@ export function Pantry({ groceries, setGroceries }: Props) {
     setName("");
     setQuantity("");
     setExpiresOn("");
+    setGroup(null);
   }
 
   function remove(id: string) {
     setGroceries((prev) => prev.filter((g) => g.id !== id));
   }
 
-  function move(id: string, to: Location) {
-    setGroceries((prev) => prev.map((g) => (g.id === id ? { ...g, location: to } : g)));
+  function move(id: string, to: FoodGroup) {
+    setGroceries((prev) => prev.map((g) => (g.id === id ? { ...g, group: to } : g)));
   }
 
   const byExpiry = (a: GroceryItem, b: GroceryItem) =>
@@ -78,11 +75,12 @@ export function Pantry({ groceries, setGroceries }: Props) {
         </label>
         <div className="row">
           <label className="field">
-            <span>Where</span>
-            <select value={location} onChange={(e) => setLocation(e.target.value as Location)}>
-              {LOCATIONS.map((l) => (
-                <option key={l.id} value={l.id}>
-                  {l.label}
+            <span>Group</span>
+            <select value={group ?? ""} onChange={(e) => setGroup((e.target.value || null) as FoodGroup | null)}>
+              <option value="">Auto</option>
+              {FOOD_GROUPS.map((g) => (
+                <option key={g} value={g}>
+                  {g}
                 </option>
               ))}
             </select>
@@ -103,17 +101,17 @@ export function Pantry({ groceries, setGroceries }: Props) {
 
       {groceries.length === 0 && (
         <p className="empty">
-          Your kitchen is empty. Add what's in your fridge, freezer and pantry to get recipe ideas.
+          Your pantry is empty. Add what's in your fridge, freezer and shelves to get recipe ideas.
         </p>
       )}
 
-      {LOCATIONS.map((loc) => {
-        const items = groceries.filter((g) => g.location === loc.id).sort(byExpiry);
+      {FOOD_GROUPS.map((group) => {
+        const items = groceries.filter((g) => g.group === group).sort(byExpiry);
         if (!items.length) return null;
         return (
-          <div key={loc.id} className="group">
+          <div key={group} className="group">
             <h2>
-              {loc.label} <span className="count">{items.length}</span>
+              {group} <span className="count">{items.length}</span>
             </h2>
             <ul className="list">
               {items.map((g) => {
@@ -129,13 +127,13 @@ export function Pantry({ groceries, setGroceries }: Props) {
                     </div>
                     <select
                       className="small"
-                      value={g.location}
-                      onChange={(e) => move(g.id, e.target.value as Location)}
+                      value={g.group}
+                      onChange={(e) => move(g.id, e.target.value as FoodGroup)}
                       aria-label={`Move ${g.name}`}
                     >
-                      {LOCATIONS.map((l) => (
-                        <option key={l.id} value={l.id}>
-                          {l.label}
+                      {FOOD_GROUPS.map((fg) => (
+                        <option key={fg} value={fg}>
+                          {fg}
                         </option>
                       ))}
                     </select>

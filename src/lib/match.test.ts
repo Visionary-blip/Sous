@@ -8,7 +8,7 @@ import { daysUntil, matchRecipe, recommend } from "./match";
 const today = new Date(2026, 8, 29); // Sep 29, 2026
 
 function item(name: string, expiresOn?: string): GroceryItem {
-  return { id: name, name, location: "fridge", expiresOn, addedOn: "2026-09-28" };
+  return { id: name, name, group: "Other", expiresOn, addedOn: "2026-09-28" };
 }
 
 function staple(name: string, inStock = true): Staple {

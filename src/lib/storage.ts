@@ -2,10 +2,13 @@ import { useEffect, useState } from "react";
 
 const PREFIX = "sous:";
 
-function read<T>(key: string, fallback: () => T): T {
+function read<T>(key: string, fallback: () => T, migrate?: (saved: T) => T): T {
   try {
     const raw = localStorage.getItem(PREFIX + key);
-    if (raw !== null) return JSON.parse(raw) as T;
+    if (raw !== null) {
+      const saved = JSON.parse(raw) as T;
+      return migrate ? migrate(saved) : saved;
+    }
   } catch {
     // Storage unavailable or corrupt: fall back to defaults.
   }
@@ -13,8 +16,8 @@ function read<T>(key: string, fallback: () => T): T {
 }
 
 /** useState that persists to localStorage, so the kitchen survives reloads. */
-export function usePersistentState<T>(key: string, fallback: () => T) {
-  const [value, setValue] = useState<T>(() => read(key, fallback));
+export function usePersistentState<T>(key: string, fallback: () => T, migrate?: (saved: T) => T) {
+  const [value, setValue] = useState<T>(() => read(key, fallback, migrate));
   useEffect(() => {
     try {
       localStorage.setItem(PREFIX + key, JSON.stringify(value));

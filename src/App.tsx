@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Cabinet } from "./components/cabinet";
+import { withGroups } from "./lib/food-groups";
 import { Pantry } from "./components/pantry";
 import { Recipes } from "./components/Recipes";
 import { starterStaples } from "./data/staples";
@@ -17,7 +18,7 @@ const TABS: { id: Tab; label: string; icon: string }[] = [
 
 export default function App() {
   const [tab, setTab] = usePersistentState<Tab>("tab", () => "recipes");
-  const [groceries, setGroceries] = usePersistentState<GroceryItem[]>("groceries", () => []);
+  const [groceries, setGroceries] = usePersistentState<GroceryItem[]>("groceries", () => [], withGroups);
   const [staples, setStaples] = usePersistentState<Staple[]>("staples", starterStaples);
   const [toast, setToast] = useState<string | null>(null);
 

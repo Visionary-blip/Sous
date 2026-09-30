@@ -1,10 +1,16 @@
-export type Location = "fridge" | "freezer" | "pantry";
+export type FoodGroup =
+  | "Protein"
+  | "Vegetables"
+  | "Fruit"
+  | "Dairy & eggs"
+  | "Grains & starches"
+  | "Other";
 
 /** A perishable or stocked grocery item the user has on hand. */
 export interface GroceryItem {
   id: string;
   name: string;
-  location: Location;
+  group: FoodGroup;
   quantity?: string;
   /** ISO date (YYYY-MM-DD) the item should be used by. */
   expiresOn?: string;
