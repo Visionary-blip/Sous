@@ -44,9 +44,3 @@ export interface Recipe {
   ingredients: RecipeIngredient[];
   steps: string[];
 }
-
-export interface ShoppingItem {
-  id: string;
-  name: string;
-  done: boolean;
-}

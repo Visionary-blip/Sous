@@ -24,7 +24,7 @@ interface Props {
   setGroceries: (fn: (prev: GroceryItem[]) => GroceryItem[]) => void;
 }
 
-export function Kitchen({ groceries, setGroceries }: Props) {
+export function Pantry({ groceries, setGroceries }: Props) {
   const [name, setName] = useState("");
   const [quantity, setQuantity] = useState("");
   const [location, setLocation] = useState<Location>("fridge");

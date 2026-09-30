@@ -2,10 +2,9 @@
 
 Sous tracks what's in your kitchen and suggests what to cook from it.
 
-- **Kitchen**: log groceries in the fridge, freezer or on the pantry shelf, with an optional quantity and use-by date. You can add several at once by separating them with commas ("eggs, spinach, milk"). Items that are about to expire are flagged.
-- **Staples**: your bank of spices, herbs, seasonings, sauces, oils and dry goods. It starts with about 90 common staples. Tap one to mark it in stock, or add your own.
+- **Pantry**: log groceries in the fridge, freezer or on the pantry shelf, with an optional quantity and use-by date. You can add several at once by separating them with commas ("eggs, spinach, milk"). Items that are about to expire are flagged.
+- **Cabinet**: your bank of spices, herbs, seasonings, sauces, oils and dry goods. It starts with about 90 common staples. Tap one to mark it in stock, or add your own.
 - **Recipes**: 34 built-in recipes, ranked by how many of their ingredients you already have. Recipes that use food about to expire come first. Open a recipe to see which ingredients come from your fridge, which come from your staples, and what you're missing.
-- **List**: send a recipe's missing ingredients to a shopping list. When you've bought them, "Put away" restocks your staples and adds everything else to the fridge.
 
 When you tap "I cooked this", Sous removes the groceries the recipe used.
 

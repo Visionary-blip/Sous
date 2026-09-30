@@ -1,39 +1,42 @@
 :root {
-  --bg: #f7f4ee;
+  /* Warm light scheme; the dark scheme below is the Spotify-style look from the design reference. */
+  --bg: #faf5ee;
   --surface: #ffffff;
-  --text: #1f2a26;
-  --muted: #6b746f;
-  --border: #e4ded3;
-  --accent: #2f5d50;
-  --accent-soft: #e2ece8;
+  --text: #2a211a;
+  --muted: #74675b;
+  --border: #e8dccd;
+  --accent: #b8650a;
+  --accent-soft: #fbead2;
   --accent-text: #ffffff;
   --ok: #2e7d4f;
   --ok-soft: #e3f2e8;
-  --warn: #a8660b;
+  --warn: #8f5a08;
   --warn-soft: #fbefd9;
   --danger: #b3261e;
   --danger-soft: #fbe4e2;
   --radius: 14px;
   --shadow: 0 1px 2px rgb(0 0 0 / 0.05), 0 2px 8px rgb(0 0 0 / 0.04);
+  --font-display: "Fraunces", Georgia, "Times New Roman", serif;
+  --font-body: "Figtree", system-ui, -apple-system, "Segoe UI", sans-serif;
   color-scheme: light;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg: #141816;
-    --surface: #1d2320;
-    --text: #e8ece9;
-    --muted: #97a19c;
-    --border: #2d3531;
-    --accent: #7fc1a9;
-    --accent-soft: #23322c;
-    --accent-text: #0f1a16;
-    --ok: #74c69d;
-    --ok-soft: #1f3128;
-    --warn: #e6b35c;
-    --warn-soft: #362b18;
-    --danger: #f0867e;
-    --danger-soft: #3a1f1d;
+    --bg: #0d0b0a;
+    --surface: #181412;
+    --text: #f6efe7;
+    --muted: #b1a497;
+    --border: #352d28;
+    --accent: #f4a63a;
+    --accent-soft: #3a2914;
+    --accent-text: #1d1206;
+    --ok: #9bd3a4;
+    --ok-soft: #1c2a20;
+    --warn: #f3d27a;
+    --warn-soft: #3a3016;
+    --danger: #ff7a66;
+    --danger-soft: #3d1f1a;
     --shadow: none;
     color-scheme: dark;
   }
@@ -47,7 +50,7 @@ body {
   margin: 0;
   background: var(--bg);
   color: var(--text);
-  font: 16px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  font: 16px/1.45 var(--font-body);
   -webkit-font-smoothing: antialiased;
 }
 
@@ -80,7 +83,8 @@ select {
 .top h1 {
   margin: 0;
   font-size: 1.5rem;
-  font-family: Georgia, "Times New Roman", serif;
+  font-family: var(--font-display);
+  font-weight: 800;
   color: var(--accent);
   letter-spacing: 0.01em;
 }
@@ -545,6 +549,10 @@ select.small {
   font-weight: 700;
 }
 
+.logo {
+  display: none;
+}
+
 .tab-icon {
   position: relative;
   font-size: 1.35rem;
@@ -578,4 +586,60 @@ select.small {
   font-size: 0.9rem;
   z-index: 20;
   max-width: calc(100% - 32px);
+}
+
+/* Wide screens: the tab bar becomes a sidebar, as in the design reference. */
+@media (min-width: 761px) {
+  .app {
+    max-width: 1100px;
+    display: grid;
+    grid-template-columns: 220px minmax(0, 1fr);
+    gap: 0 24px;
+    padding: 0 16px;
+  }
+
+  .top {
+    display: none;
+  }
+
+  .tabs {
+    position: sticky;
+    top: 16px;
+    grid-column: 1;
+    grid-row: 1;
+    align-self: start;
+    flex-direction: column;
+    justify-content: flex-start;
+    gap: 2px;
+    margin-top: 16px;
+    padding: 14px 10px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+  }
+
+  .logo {
+    display: block;
+    padding: 4px 10px 14px;
+    font: 800 1.9rem/1 var(--font-display);
+    color: var(--accent);
+  }
+
+  .tabs button {
+    flex: none;
+    max-width: none;
+    flex-direction: row;
+    gap: 12px;
+    padding: 10px;
+    border-radius: 8px;
+    font-size: 1rem;
+  }
+
+  main {
+    grid-column: 2;
+    grid-row: 1;
+  }
+
+  .toast {
+    bottom: 24px;
+  }
 }

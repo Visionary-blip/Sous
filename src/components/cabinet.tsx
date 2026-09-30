@@ -9,7 +9,7 @@ interface Props {
   setStaples: (fn: (prev: Staple[]) => Staple[]) => void;
 }
 
-export function Staples({ staples, setStaples }: Props) {
+export function Cabinet({ staples, setStaples }: Props) {
   const [name, setName] = useState("");
   const [category, setCategory] = useState<StapleCategory>("Spices");
   const [filter, setFilter] = useState("");

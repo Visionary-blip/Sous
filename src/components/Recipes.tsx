@@ -10,11 +10,10 @@ const MEALS = ["breakfast", "lunch", "dinner", "side", "baking"];
 interface Props {
   groceries: GroceryItem[];
   staples: Staple[];
-  onAddToShopping: (names: string[]) => void;
   onCooked: (usedIds: string[]) => void;
 }
 
-export function Recipes({ groceries, staples, onAddToShopping, onCooked }: Props) {
+export function Recipes({ groceries, staples, onCooked }: Props) {
   const [readiness, setReadiness] = useState<Readiness>("all");
   const [meal, setMeal] = useState<string | null>(null);
   const [query, setQuery] = useState("");
@@ -39,7 +38,7 @@ export function Recipes({ groceries, staples, onAddToShopping, onCooked }: Props
   if (groceries.length === 0) {
     return (
       <p className="empty">
-        Add a few groceries in the <strong>Kitchen</strong> tab and Sous will suggest what to cook.
+        Add a few groceries in the <strong>Pantry</strong> tab and Sous will suggest what to cook.
       </p>
     );
   }
@@ -95,7 +94,6 @@ export function Recipes({ groceries, staples, onAddToShopping, onCooked }: Props
             match={m}
             open={openId === m.recipe.id}
             onToggle={() => setOpenId(openId === m.recipe.id ? null : m.recipe.id)}
-            onAddToShopping={onAddToShopping}
             onCooked={onCooked}
           />
         ))}
@@ -108,16 +106,13 @@ function RecipeCard({
   match: m,
   open,
   onToggle,
-  onAddToShopping,
   onCooked,
 }: {
   match: RecipeMatch;
   open: boolean;
   onToggle: () => void;
-  onAddToShopping: (names: string[]) => void;
   onCooked: (usedIds: string[]) => void;
 }) {
-  const [added, setAdded] = useState(false);
   const pct = Math.round(m.score * 100);
   const status =
     m.missing.length === 0
@@ -184,17 +179,6 @@ function RecipeCard({
           </ol>
 
           <div className="actions">
-            {m.missing.length > 0 && (
-              <button
-                disabled={added}
-                onClick={() => {
-                  onAddToShopping(m.missing.map((i) => i.name));
-                  setAdded(true);
-                }}
-              >
-                {added ? "Added to shopping list" : `Add ${m.missing.length} missing to shopping list`}
-              </button>
-            )}
             {m.usesGroceries.length > 0 && (
               <button
                 className="primary"
