@@ -922,3 +922,57 @@ button.icon.on {
   margin: 0 0 6px;
   font-size: 0.85rem;
 }
+
+/* Home: the deck of groceries close to expiring */
+.deck {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: clamp(130px, 38vw, 160px);
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 8px;
+  scroll-snap-type: x proximity;
+}
+
+.deck-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  min-width: 0;
+  padding: 12px;
+  border-left: 4px solid var(--border);
+  text-align: left;
+  scroll-snap-align: start;
+}
+
+.deck-card strong {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-transform: capitalize;
+}
+
+.deck-card span {
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+.deck-card.danger {
+  border-left-color: var(--danger);
+  background: var(--danger-soft);
+}
+
+.deck-card.danger span {
+  color: var(--danger);
+}
+
+.deck-card.warn {
+  border-left-color: var(--warn);
+  background: var(--warn-soft);
+}
+
+.deck-card.warn span {
+  color: var(--warn);
+}

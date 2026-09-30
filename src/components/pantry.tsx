@@ -1,18 +1,8 @@
 import { useState } from "react";
 import { FOOD_GROUPS, guessGroup } from "../lib/food-groups";
-import { daysUntil } from "../lib/match";
+import { expiryLabel } from "../lib/expiry";
 import { newId, todayIso } from "../lib/storage";
 import type { FoodGroup, GroceryItem } from "../types";
-
-function expiryLabel(item: GroceryItem, today: Date): { text: string; tone: string } | null {
-  if (!item.expiresOn) return null;
-  const days = daysUntil(item.expiresOn, today);
-  if (days < 0) return { text: `Expired ${-days}d ago`, tone: "danger" };
-  if (days === 0) return { text: "Use today", tone: "danger" };
-  if (days === 1) return { text: "Use by tomorrow", tone: "warn" };
-  if (days <= 3) return { text: `Use within ${days} days`, tone: "warn" };
-  return { text: `Good for ${days} days`, tone: "ok" };
-}
 
 interface Props {
   groceries: GroceryItem[];
