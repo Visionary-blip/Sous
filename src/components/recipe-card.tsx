@@ -1,3 +1,4 @@
+import { coverColors } from "@/lib/cover";
 import type { RecipeMatch } from "@/lib/match";
 
 export function readiness(m: RecipeMatch): { text: string; tone: string } {
@@ -10,18 +11,18 @@ interface Props {
   onOpen: (id: string) => void;
 }
 
+/** A square cover with the title on it, like an album, and a one-line status underneath. */
 export function RecipeCard({ match: m, onOpen }: Props) {
-  const status = readiness(m);
+  const [from, to] = coverColors(m.recipe);
+  const note = m.usesExpiring.length > 0 ? `Uses up ${m.usesExpiring[0].name}` : readiness(m).text;
   return (
-    <button className="card recipe-card" onClick={() => onOpen(m.recipe.id)}>
-      <h3>{m.recipe.title}</h3>
-      <div className="meta">
-        {m.recipe.minutes} min · serves {m.recipe.servings}
-      </div>
-      <div className="badges">
-        <span className={`badge ${status.tone}`}>{status.text}</span>
-        {m.usesExpiring.length > 0 && <span className="badge danger">Uses up {m.usesExpiring[0].name}</span>}
-      </div>
+    <button className="tile" onClick={() => onOpen(m.recipe.id)}>
+      <span className="cover" style={{ "--c1": from, "--c2": to } as React.CSSProperties}>
+        <span>{m.recipe.title}</span>
+      </span>
+      <span className="tile-meta">
+        {m.recipe.minutes} min · {note}
+      </span>
     </button>
   );
 }
