@@ -50,3 +50,9 @@ export interface Recipe {
   ingredients: RecipeIngredient[];
   steps: string[];
 }
+
+/** Recipe ids the user has liked (Classics) or wants to try (Wishlist). A recipe is in at most one. */
+export interface Classics {
+  liked: string[];
+  wish: string[];
+}

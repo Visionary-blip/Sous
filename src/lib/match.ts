@@ -82,6 +82,27 @@ export function matchRecipe(
   };
 }
 
+/** Fewest missing first, then most soon-to-expire items used, then best overall match. */
+export function compareMatches(a: RecipeMatch, b: RecipeMatch): number {
+  return (
+    a.missing.length - b.missing.length ||
+    b.usesExpiring.length - a.usesExpiring.length ||
+    b.score - a.score ||
+    b.usesGroceries.length - a.usesGroceries.length ||
+    a.recipe.minutes - b.recipe.minutes
+  );
+}
+
+/** Every recipe matched against the kitchen and ranked, including ones that use no groceries. */
+export function matchAll(
+  recipes: Recipe[],
+  groceries: GroceryItem[],
+  staples: Staple[],
+  today: Date = new Date(),
+): RecipeMatch[] {
+  return recipes.map((r) => matchRecipe(r, groceries, staples, today)).sort(compareMatches);
+}
+
 /**
  * Rank recipes for the user's current kitchen.
  *
@@ -96,15 +117,5 @@ export function recommend(
   staples: Staple[],
   today: Date = new Date(),
 ): RecipeMatch[] {
-  return recipes
-    .map((r) => matchRecipe(r, groceries, staples, today))
-    .filter((m) => m.usesGroceries.length > 0)
-    .sort(
-      (a, b) =>
-        a.missing.length - b.missing.length ||
-        b.usesExpiring.length - a.usesExpiring.length ||
-        b.score - a.score ||
-        b.usesGroceries.length - a.usesGroceries.length ||
-        a.recipe.minutes - b.recipe.minutes,
-    );
+  return matchAll(recipes, groceries, staples, today).filter((m) => m.usesGroceries.length > 0);
 }

@@ -359,7 +359,6 @@ select.small {
   padding: 4px 12px;
   min-height: 34px;
   font-size: 0.875rem;
-  text-transform: capitalize;
 }
 
 .pill.on {
@@ -642,4 +641,97 @@ select.small {
   .toast {
     bottom: 24px;
   }
+}
+
+/* Recipes: front shelf, browse grid, rows */
+.shelf {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  padding-bottom: 8px;
+  scroll-snap-type: x proximity;
+}
+
+.recipe-card {
+  display: block;
+  text-align: left;
+  padding: 14px;
+  height: 100%;
+  min-height: 0;
+}
+
+.shelf .recipe-card {
+  flex: none;
+  width: 220px;
+  scroll-snap-align: start;
+}
+
+.browse-tile {
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 6px;
+  min-height: 140px;
+  color: var(--accent);
+  font-weight: 700;
+  text-align: center;
+  background: var(--accent-soft);
+}
+
+.browse-tile span {
+  font-size: 1.6rem;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 12px;
+}
+
+.screen-title {
+  margin: 8px 0 12px;
+  font: 800 1.5rem/1.15 var(--font-display);
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--text);
+}
+
+.back {
+  border: none;
+  background: transparent;
+  color: var(--accent);
+  font-weight: 600;
+  padding: 0 8px 0 0;
+}
+
+.row-open {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  border: none;
+  background: transparent;
+  text-align: left;
+  padding: 0;
+}
+
+.recipe-detail {
+  padding: 14px;
+}
+
+.detail-head {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+}
+
+button.icon.on {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.recipe-card h3 {
+  margin: 0 0 4px;
+  font-size: 1.05rem;
 }

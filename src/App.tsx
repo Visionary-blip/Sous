@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Cabinet } from "./components/cabinet";
 import { withGroups } from "./lib/food-groups";
 import { Pantry } from "./components/pantry";
-import { Recipes } from "./components/Recipes";
+import { Recipes } from "./components/recipes";
 import { starterStaples } from "./data/staples";
 import { isExpiringSoon } from "./lib/match";
 import { usePersistentState } from "./lib/storage";

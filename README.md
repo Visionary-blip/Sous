@@ -4,7 +4,7 @@ Sous tracks what's in your kitchen and suggests what to cook from it.
 
 - **Pantry**: log groceries, grouped by food group (Protein, Vegetables, Fruit, Dairy & eggs, Grains & starches, Other), with an optional quantity and use-by date. Sous guesses the group from the name; you can change it. You can add several at once by separating them with commas ("eggs, spinach, milk"). Items that are about to expire are flagged.
 - **Cabinet**: your bank of spices, herbs, seasonings, sauces, oils and dry goods. It starts with about 90 common staples. Tap one to mark it in stock, or add your own.
-- **Recipes**: 34 built-in recipes, ranked by how many of their ingredients you already have. Recipes that use food about to expire come first. Open a recipe to see which ingredients come from your fridge, which come from your staples, and what you're missing.
+- **Recipes**: 34 built-in recipes in three sections. *Recommended* shows about five picks (food about to expire first, then what you can make now) and a Browse screen with search and filters over every recipe. *Classics* holds meals you have liked (heart) and *Wishlist* holds dishes you want to try (+). Open a recipe to see which ingredients come from your fridge, which come from your staples, and what you're missing.
 
 When you tap "I cooked this", Sous removes the groceries the recipe used.
 
