@@ -56,7 +56,6 @@ export function SuggestionBar({ match: m, plain }: Props) {
       {open && (
         <div className="sbar-body">
           <DishRecipes dishId={id} />
-          <StoreFinder missing={m.missing} />
           <p className="sbar-sub">Search elsewhere</p>
           <ul className="sbar-links">
             {suggestionLinks(m.recipe.title).map((l) => (
@@ -68,6 +67,7 @@ export function SuggestionBar({ match: m, plain }: Props) {
               </li>
             ))}
           </ul>
+          <StoreFinder missing={m.missing} />
           <div className="actions">
             <button className={`icon ${liked ? "on" : ""}`} aria-pressed={liked} onClick={() => like(id)} aria-label={liked ? "Remove from Classics" : "Add to Classics"}>
               {liked ? "♥" : "♡"}

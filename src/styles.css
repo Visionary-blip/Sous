@@ -1349,7 +1349,7 @@ button.icon.on {
 
 /* "Where to buy" for the missing ingredients of a dish. */
 .stores {
-  margin-bottom: 12px;
+  margin: 12px 0;
 }
 
 .stores-btn {
