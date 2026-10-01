@@ -1320,3 +1320,69 @@ button.icon.on {
   color: var(--muted);
   font-size: 0.85rem;
 }
+
+/* The date in the Add form takes the same colour as the Fridge badges: ok, warn or danger by how close it is. */
+.date-field.ok {
+  background: var(--ok-soft);
+  border-color: var(--ok);
+  color: var(--ok);
+}
+
+.date-field.warn {
+  background: var(--warn-soft);
+  border-color: var(--warn);
+  color: var(--warn);
+}
+
+.date-field.danger {
+  background: var(--danger-soft);
+  border-color: var(--danger);
+  color: var(--danger);
+}
+
+.date-note {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+/* "Where to buy" for the missing ingredients of a dish. */
+.stores {
+  margin-bottom: 12px;
+}
+
+.stores-btn {
+  font-size: 0.85rem;
+  padding: 6px 12px;
+  border-radius: 999px;
+}
+
+.stores-panel {
+  margin-top: 8px;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+
+.stores-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  margin: 0 0 8px;
+  font-size: 0.9rem;
+}
+
+.stores-row strong {
+  flex-basis: 100%;
+  text-transform: capitalize;
+}
+
+.stores-row a {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.stores-panel small {
+  color: var(--muted);
+}

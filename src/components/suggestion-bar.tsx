@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { StoreFinder } from "@/components/store-finder";
 import { StarIcon } from "@/components/marks";
 import { DishRecipes } from "@/components/dish-recipes";
 import { SEED_RECIPES } from "@/data/seed-recipes";
@@ -55,6 +56,7 @@ export function SuggestionBar({ match: m, plain }: Props) {
       {open && (
         <div className="sbar-body">
           <DishRecipes dishId={id} />
+          <StoreFinder missing={m.missing} />
           <p className="sbar-sub">Search elsewhere</p>
           <ul className="sbar-links">
             {suggestionLinks(m.recipe.title).map((l) => (
