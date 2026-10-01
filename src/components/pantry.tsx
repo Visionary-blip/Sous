@@ -1,12 +1,19 @@
 import { useState } from "react";
 import { FOOD_GROUPS, guessGroup } from "../lib/food-groups";
 import { expiryLabel } from "../lib/expiry";
+import { assumedExpiry } from "../lib/shelf-life";
 import { newId, todayIso } from "../lib/storage";
 import type { FoodGroup, GroceryItem } from "../types";
 
 interface Props {
   groceries: GroceryItem[];
   setGroceries: (fn: (prev: GroceryItem[]) => GroceryItem[]) => void;
+}
+
+function dateHint(count: number, picked: boolean): string {
+  if (picked) return "Your date.";
+  if (count === 0) return "Sous estimates a use-by date from what you type. Change it here if it's wrong.";
+  return count === 1 ? "Estimated. Pick a different date if it's wrong." : "Each item gets its own estimate. Pick a date to use one date for all.";
 }
 
 export function Pantry({ groceries, setGroceries }: Props) {
@@ -16,21 +23,25 @@ export function Pantry({ groceries, setGroceries }: Props) {
   const [group, setGroup] = useState<FoodGroup | null>(null);
   const [expiresOn, setExpiresOn] = useState("");
   const today = new Date();
+  // Allow adding several at once: "eggs, milk, spinach".
+  const names = name
+    .split(",")
+    .map((n) => n.trim())
+    .filter(Boolean);
+  const estimateFor = (n: string) => assumedExpiry(n, group ?? guessGroup(n), todayIso());
+  // With one item the box shows its estimate; with several, each gets its own unless a date is picked.
+  const shownDate = expiresOn || (names.length === 1 ? estimateFor(names[0]) : "");
 
   function add(e: React.FormEvent) {
     e.preventDefault();
-    // Allow adding several at once: "eggs, milk, spinach".
-    const names = name
-      .split(",")
-      .map((n) => n.trim())
-      .filter(Boolean);
     if (!names.length) return;
     const added: GroceryItem[] = names.map((n) => ({
       id: newId(),
       name: n,
       group: group ?? guessGroup(n),
       quantity: names.length === 1 && quantity.trim() ? quantity.trim() : undefined,
-      expiresOn: expiresOn || undefined,
+      expiresOn: expiresOn || estimateFor(n),
+      expiryEstimated: expiresOn ? undefined : true,
       addedOn: todayIso(),
     }));
     setGroceries((prev) => [...added, ...prev]);
@@ -79,14 +90,20 @@ export function Pantry({ groceries, setGroceries }: Props) {
             <span>Qty</span>
             <input value={quantity} onChange={(e) => setQuantity(e.target.value)} placeholder="optional" />
           </label>
-          <label className="field">
-            <span>Use by</span>
-            <input type="date" value={expiresOn} onChange={(e) => setExpiresOn(e.target.value)} />
-          </label>
         </div>
         <button className="primary" type="submit" disabled={!name.trim()}>
           Add
         </button>
+        <label className="field">
+          <span>Use by</span>
+          <input type="date" value={shownDate} onChange={(e) => setExpiresOn(e.target.value)} />
+          <small className="muted">{dateHint(names.length, Boolean(expiresOn))}</small>
+        </label>
+        {expiresOn && (
+          <button type="button" className="set-link" onClick={() => setExpiresOn("")}>
+            Use the estimate instead
+          </button>
+        )}
       </form>
 
       {groceries.length === 0 && (
@@ -114,6 +131,7 @@ export function Pantry({ groceries, setGroceries }: Props) {
                         {g.quantity && <span className="muted"> · {g.quantity}</span>}
                       </div>
                       {exp && <span className={`badge ${exp.tone}`}>{exp.text}</span>}
+                      {exp && g.expiryEstimated && <span className="muted"> est.</span>}
                     </div>
                     <select
                       className="small"

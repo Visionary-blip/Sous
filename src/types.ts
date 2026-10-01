@@ -14,6 +14,8 @@ export interface GroceryItem {
   quantity?: string;
   /** ISO date (YYYY-MM-DD) the item should be used by. */
   expiresOn?: string;
+  /** True when Sous guessed the use-by date from the name rather than the person entering it. */
+  expiryEstimated?: boolean;
   addedOn: string;
 }
 
