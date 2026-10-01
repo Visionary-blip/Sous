@@ -33,7 +33,7 @@ export function SuggestionBar({ match: m, plain }: Props) {
   const note = m.usesExpiring.length > 0 ? `Uses up ${m.usesExpiring.slice(0, 2).map((g) => g.name).join(" & ")}` : readiness(m).text;
 
   return (
-    <div className={`sbar ${open ? "open" : ""} ${plain ? "plain" : ""}`}>
+    <div className={`sbar ${open ? "open" : ""} ${plain ? "plain" : ""} ${SEED_RECIPES[id] ? "fast" : ""}`}>
       <button
         className="sbar-head"
         style={plain ? undefined : { background: `linear-gradient(90deg, ${from}, ${to})` }}

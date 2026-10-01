@@ -1058,6 +1058,15 @@ button.icon.on {
   font-size: 1.3rem;
 }
 
+/* "Fast tabs": dishes with seeded recipes get a thin white outline; list rows (no colour) use the text colour so it still shows in the light scheme. */
+.sbar.fast .sbar-head {
+  border: 1px solid #fff;
+}
+
+.sbar.fast.plain .sbar-head {
+  border-color: var(--text);
+}
+
 .sbar-sign .bolt {
   flex: none;
 }
