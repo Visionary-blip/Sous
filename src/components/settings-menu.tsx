@@ -25,6 +25,7 @@ function ProfileList({ api }: { api: Api }) {
           <li key={p.id}>
             <button className={p.id === api.active.id ? "on" : ""} aria-pressed={p.id === api.active.id} onClick={() => { setConfirming(false); api.switchTo(p.id); }}>
               {p.name}
+              {p.username && <small> @{p.username}</small>}
               {p.phone && <small> · {p.phone}</small>}
             </button>
           </li>
@@ -41,14 +42,41 @@ function ProfileList({ api }: { api: Api }) {
   );
 }
 
+function UsernameField({ api }: { api: Api }) {
+  const [text, setText] = useState(api.active.username ?? "");
+  const [message, setMessage] = useState<string | null>(null);
+
+  function save(e: FormEvent) {
+    e.preventDefault();
+    const problem = api.setUsername(text);
+    setMessage(problem ?? "Saved.");
+  }
+
+  return (
+    <form className="set-block" onSubmit={save}>
+      <h3>Username · {api.active.name}</h3>
+      <div className="set-row">
+        <input value={text} onChange={(e) => { setText(e.target.value); setMessage(null); }} placeholder="@username" aria-label="Username" autoCapitalize="none" autoCorrect="off" />
+        <button type="submit">Save</button>
+      </div>
+      {message && <small role="status">{message}</small>}
+    </form>
+  );
+}
+
 function AddProfile({ onAdd }: { onAdd: Api["add"] }) {
   const [name, setName] = useState("");
+  const [username, setUsername] = useState("");
   const [phone, setPhone] = useState("");
+  const [error, setError] = useState<string | null>(null);
 
   function submit(e: FormEvent) {
     e.preventDefault();
-    onAdd(name, phone);
+    const problem = onAdd(name, phone, username);
+    setError(problem);
+    if (problem) return;
     setName("");
+    setUsername("");
     setPhone("");
   }
 
@@ -56,6 +84,8 @@ function AddProfile({ onAdd }: { onAdd: Api["add"] }) {
     <form className="set-block set-add" onSubmit={submit}>
       <h3>Add a profile</h3>
       <input value={name} onChange={(e) => setName(e.target.value)} placeholder="Name" aria-label="Name" required />
+      <input value={username} onChange={(e) => setUsername(e.target.value)} placeholder="@username (optional)" aria-label="New profile username" autoCapitalize="none" autoCorrect="off" />
+      {error && <small role="alert">{error}</small>}
       <input value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="Phone number (optional)" aria-label="Phone number" type="tel" />
       <small>The number is only a label on this device. No text is sent and nothing is checked.</small>
       <button type="submit">Add and switch</button>
@@ -92,6 +122,7 @@ export function SettingsMenu({ api }: { api: Api }) {
       {open && (
         <div className="settings-panel" role="dialog" aria-label="Settings">
           <ProfileList api={api} />
+          <UsernameField key={api.active.id} api={api} />
           <DietPicker api={api} />
           <AddProfile onAdd={api.add} />
         </div>

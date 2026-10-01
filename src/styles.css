@@ -1299,3 +1299,13 @@ button.icon.on {
   margin: 0;
   font-size: 0.88rem;
 }
+
+.set-row {
+  display: flex;
+  gap: 8px;
+}
+
+.set-row input {
+  flex: 1;
+  min-width: 0;
+}
