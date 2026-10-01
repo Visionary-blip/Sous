@@ -25,7 +25,7 @@ describe("fitsDiets", () => {
   });
 
   it("gluten free drops wheat foods and soy sauce but keeps rice and tapioca flour", () => {
-    for (const n of ["pasta", "flour", "tortilla", "soy sauce", "ramen noodles"]) expect(fits("gluten-free", n)).toBe(false);
+    for (const n of ["pasta", "flour", "tortilla", "soy sauce", "ramen noodles", "baguette", "spring roll wrapper"]) expect(fits("gluten-free", n)).toBe(false);
     expect(fits("gluten-free", "rice", "tapioca flour", "rice noodles")).toBe(false);
     expect(fits("gluten-free", "rice", "tapioca flour")).toBe(true);
   });

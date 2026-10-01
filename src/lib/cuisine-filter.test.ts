@@ -13,8 +13,8 @@ describe("cuisine filter", () => {
   });
 
   it("keeps only recipes of the chosen cuisine", () => {
-    expect(titles(["Latin"])).toContain("Spaghetti Aglio e Olio");
-    expect(titles(["Latin"])).not.toContain("Smash Burgers");
+    expect(titles(["Mediterranean"])).toContain("Spaghetti Aglio e Olio");
+    expect(titles(["Mediterranean"])).not.toContain("Smash Burgers");
   });
 
   it("combines cuisines with OR and with the other chips with AND", () => {
@@ -31,6 +31,12 @@ describe("cuisine filter", () => {
   it("puts Thai and Vietnamese dishes under Southeast Asia, not Asia", () => {
     expect(titles(["Southeast Asia"])).toEqual(expect.arrayContaining(["Thai Green Curry", "Pad Thai", "Chicken Pho"]));
     expect(titles(["Asia"])).not.toContain("Pad Thai");
+  });
+
+  it("covers Thai, Vietnamese, Indonesian, Malaysian and Filipino dishes under Southeast Asia", () => {
+    const sea = titles(["Southeast Asia"]);
+    expect(sea).toHaveLength(20);
+    for (const t of ["Tom Yum Soup", "Banh Mi", "Nasi Goreng", "Laksa", "Chicken Adobo", "Beef Rendang"]) expect(sea).toContain(t);
   });
 
   it("puts Mexican dishes under Central America and poutine under American", () => {

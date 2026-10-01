@@ -1,11 +1,11 @@
-export type Cuisine = "Asia" | "Southeast Asia" | "Central America" | "South America" | "American South" | "Latin" | "Northern Europe" | "American";
+export type Cuisine = "Asia" | "Southeast Asia" | "Central America" | "South America" | "American South" | "Mediterranean" | "Northern Europe" | "American";
 
 /** The groups behind the Ethnicity button in Browse, in display order. */
-export const CUISINES: Cuisine[] = ["Asia", "Southeast Asia", "Central America", "South America", "American South", "Latin", "Northern Europe", "American"];
+export const CUISINES: Cuisine[] = ["Asia", "Southeast Asia", "Central America", "South America", "American South", "Mediterranean", "Northern Europe", "American"];
 
 /**
  * Which flavour group each dish belongs to (owner's groups, 2026-09-30). Asia is China, Japan, Korea, India
- * and the rest; Southeast Asia is Thailand and Vietnam (moved out of Asia 2026-10-01); Latin is Italy, Spain, France and Portugal; Central America includes Mexico;
+ * and the rest; Southeast Asia is Thailand and Vietnam (moved out of Asia 2026-10-01); Mediterranean is Italy, Spain, France and Portugal; Central America includes Mexico;
  * Poutine counts as American. Assigned by hand. A dish that fits none is left out, so it shows only when
  * no group is selected.
  */
@@ -34,24 +34,24 @@ export const CUISINE_OF: Record<string, Cuisine> = {
   "steak-fajitas": "Central America",
   // American South
   "bbq-meatballs": "American South",
-  // Latin: Italy, Spain, France, Portugal
-  "spaghetti-aglio-olio": "Latin",
-  "pasta-marinara": "Latin",
-  "spaghetti-bolognese": "Latin",
-  "creamy-tuscan-pasta": "Latin",
-  "mushroom-risotto": "Latin",
-  "caprese-salad": "Latin",
-  "fettuccine-alfredo": "Latin",
-  "spaghetti-carbonara": "Latin",
-  "penne-alla-vodka": "Latin",
-  "pesto-pasta": "Latin",
-  "pasta-arrabbiata": "Latin",
-  "cacio-e-pepe": "Latin",
-  "spaghetti-and-meatballs": "Latin",
-  "margherita-pizza": "Latin",
-  lasagna: "Latin",
-  "garlic-shrimp": "Latin",
-  paella: "Latin",
+  // Mediterranean: Italy, Spain, France, Portugal
+  "spaghetti-aglio-olio": "Mediterranean",
+  "pasta-marinara": "Mediterranean",
+  "spaghetti-bolognese": "Mediterranean",
+  "creamy-tuscan-pasta": "Mediterranean",
+  "mushroom-risotto": "Mediterranean",
+  "caprese-salad": "Mediterranean",
+  "fettuccine-alfredo": "Mediterranean",
+  "spaghetti-carbonara": "Mediterranean",
+  "penne-alla-vodka": "Mediterranean",
+  "pesto-pasta": "Mediterranean",
+  "pasta-arrabbiata": "Mediterranean",
+  "cacio-e-pepe": "Mediterranean",
+  "spaghetti-and-meatballs": "Mediterranean",
+  "margherita-pizza": "Mediterranean",
+  lasagna: "Mediterranean",
+  "garlic-shrimp": "Mediterranean",
+  paella: "Mediterranean",
   // Northern Europe
   "swedish-meatballs": "Northern Europe",
   "fish-and-chips": "Northern Europe",
@@ -96,19 +96,35 @@ export const CUISINE_OF: Record<string, Cuisine> = {
   "kung-pao-chicken": "Asia",
   "pork-dumplings": "Asia",
   "thai-basil-chicken": "Southeast Asia",
+  "tom-yum-soup": "Southeast Asia",
+  "tom-kha-gai": "Southeast Asia",
+  "massaman-curry": "Southeast Asia",
+  "thai-red-curry": "Southeast Asia",
+  "pad-see-ew": "Southeast Asia",
+  "som-tum": "Southeast Asia",
+  "mango-sticky-rice": "Southeast Asia",
+  "banh-mi": "Southeast Asia",
+  "fresh-spring-rolls": "Southeast Asia",
+  "bun-cha": "Southeast Asia",
+  "nasi-goreng": "Southeast Asia",
+  "chicken-satay": "Southeast Asia",
+  "beef-rendang": "Southeast Asia",
+  "laksa": "Southeast Asia",
+  "chicken-adobo": "Southeast Asia",
+  "lumpia": "Southeast Asia",
   "chilaquiles": "Central America",
   "chicken-enchiladas": "Central America",
   "huevos-rancheros": "Central America",
   "street-corn": "Central America",
   "chicken-pozole": "Central America",
-  "gazpacho": "Latin",
-  "spanish-tortilla": "Latin",
-  "ratatouille": "Latin",
-  "coq-au-vin": "Latin",
-  "quiche-lorraine": "Latin",
-  "croque-monsieur": "Latin",
-  "chicken-parmesan": "Latin",
-  "tiramisu": "Latin",
+  "gazpacho": "Mediterranean",
+  "spanish-tortilla": "Mediterranean",
+  "ratatouille": "Mediterranean",
+  "coq-au-vin": "Mediterranean",
+  "quiche-lorraine": "Mediterranean",
+  "croque-monsieur": "Mediterranean",
+  "chicken-parmesan": "Mediterranean",
+  "tiramisu": "Mediterranean",
   "shepherds-pie": "Northern Europe",
   "bangers-and-mash": "Northern Europe",
   "full-english-breakfast": "Northern Europe",
