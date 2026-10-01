@@ -1,5 +1,5 @@
 // Bump VERSION to drop every old cache on the next visit.
-const VERSION = "sous-v1";
+const VERSION = "sous-v2";
 const FONT_HOSTS = ["fonts.googleapis.com", "fonts.gstatic.com"];
 
 self.addEventListener("install", (event) => {

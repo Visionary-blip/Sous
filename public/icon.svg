@@ -1,1 +1,23 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="14" fill="#181412"/><path d="M18 30h28a14 14 0 0 1-28 0z" fill="#f4efe6"/><path d="M26 24c0-4 4-4 4-8M34 24c0-4 4-4 4-8" stroke="#f4efe6" stroke-width="3" fill="none" stroke-linecap="round"/><rect x="16" y="46" width="32" height="4" rx="2" fill="#e8a64b"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" fill="#0d1428"/>
+  <g fill="#e8eefc" stroke="none">
+    <!-- chef's hat -->
+    <circle cx="232" cy="112" r="36"/>
+    <circle cx="272" cy="90" r="42"/>
+    <circle cx="312" cy="112" r="36"/>
+    <rect x="212" y="108" width="122" height="62" rx="8"/>
+    <!-- ear, head and snout -->
+    <circle cx="238" cy="190" r="30"/>
+    <ellipse cx="290" cy="214" rx="62" ry="46"/>
+    <path d="M330 188 L402 240 L336 264 Z"/>
+    <circle cx="402" cy="240" r="10"/>
+    <!-- body, paw and feet -->
+    <path d="M252 250 C190 272 148 340 164 400 C180 442 302 446 348 402 C384 352 352 286 322 256 Z"/>
+    <ellipse cx="338" cy="306" rx="24" ry="14" transform="rotate(25 338 306)"/>
+    <ellipse cx="206" cy="436" rx="34" ry="12"/>
+    <ellipse cx="300" cy="438" rx="34" ry="12"/>
+  </g>
+  <!-- the hat band reads as a gap between hat and head -->
+  <rect x="204" y="166" width="140" height="6" fill="#0d1428"/>
+  <path d="M166 402 C104 414 82 352 118 316" fill="none" stroke="#e8eefc" stroke-width="14" stroke-linecap="round"/>
+</svg>
