@@ -1092,3 +1092,76 @@ button.icon.on {
   text-transform: none;
   color: var(--text);
 }
+
+/* Saved, simplified recipes under a dish bar. */
+.dr-list {
+  list-style: none;
+  margin: 0 0 10px;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.dr-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  width: 100%;
+  text-align: left;
+  font-weight: 600;
+}
+
+.dr-body {
+  padding: 8px 4px 4px;
+  font-size: 0.92rem;
+}
+
+.dr-body h4 {
+  margin: 10px 0 4px;
+  color: var(--muted);
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.dr-body ul,
+.dr-body ol {
+  margin: 0;
+  padding-left: 1.2em;
+}
+
+.dr-meta {
+  margin: 0;
+  color: var(--muted);
+}
+
+.dr-error {
+  margin: 6px 0 0;
+  color: var(--danger);
+  font-size: 0.88rem;
+}
+
+.dr-add {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.dr-add input {
+  flex: 1 1 200px;
+}
+
+.dr-remove {
+  margin-top: 8px;
+  font-size: 0.85rem;
+}
+
+.sbar-sub {
+  margin: 4px 0 6px;
+  color: var(--muted);
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}

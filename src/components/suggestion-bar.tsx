@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { DishRecipes } from "@/components/dish-recipes";
 import { useClassicsContext } from "@/lib/classics-context";
 import { coverColors } from "@/lib/cover";
 import type { RecipeMatch } from "@/lib/match";
@@ -35,6 +36,8 @@ export function SuggestionBar({ match: m, plain }: Props) {
       </button>
       {open && (
         <div className="sbar-body">
+          <DishRecipes dishId={id} />
+          <p className="sbar-sub">Search elsewhere</p>
           <ul className="sbar-links">
             {suggestionLinks(m.recipe.title).map((l) => (
               <li key={l.url}>

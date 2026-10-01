@@ -10,7 +10,9 @@ import { matchAll, type RecipeMatch } from "@/lib/match";
 import { consume, applyChanges } from "@/lib/consume";
 import { FinishUp, type FinishUpRow } from "@/components/finish-up";
 import type { RecipeView } from "@/lib/recipe-view";
+import { SavedRecipesContext } from "@/lib/saved-recipes-context";
 import { useClassics } from "@/lib/use-classics";
+import { useSavedRecipes } from "@/lib/use-saved-recipes";
 import { useCooking } from "@/lib/use-cooking";
 import { withGroups } from "./lib/food-groups";
 import { Pantry } from "./components/pantry";
@@ -36,6 +38,7 @@ export default function App() {
   const [toast, setToast] = useState<string | null>(null);
   const [view, setView] = useState<RecipeView>(null);
   const classics = useClassics();
+  const savedRecipes = useSavedRecipes();
   const cook = useCooking();
   const [finishUp, setFinishUp] = useState<FinishUpRow[]>([]);
 
@@ -76,6 +79,7 @@ export default function App() {
 
   return (
     <ClassicsContext.Provider value={classics}>
+    <SavedRecipesContext.Provider value={savedRecipes}>
     <div className={`app ${cook.cooking ? "cooking" : ""} ${SUGGESTION_MODE ? "suggest-mode" : ""}`}>
       <header className="top">
         <h1>Sous</h1>
@@ -127,6 +131,7 @@ export default function App() {
         ))}
       </nav>
     </div>
+    </SavedRecipesContext.Provider>
     </ClassicsContext.Provider>
   );
 }
