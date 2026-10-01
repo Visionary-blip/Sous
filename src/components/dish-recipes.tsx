@@ -1,11 +1,17 @@
 import { useState, type FormEvent } from "react";
+import { HeartIcon, StarIcon } from "@/components/marks";
 import { SEED_RECIPES } from "@/data/seed-recipes";
 import type { SimpleRecipe } from "@/lib/parse-recipe";
+import { convertUnits } from "@/lib/convert-units";
+import { useProfilePrefs } from "@/lib/profile-prefs-context";
 import { entriesForDish, type RecipeEntry } from "@/lib/saved-recipes";
+import { useClassicsContext } from "@/lib/classics-context";
 import { useSavedRecipesContext } from "@/lib/saved-recipes-context";
 import { useRecipeLoader } from "@/lib/use-recipe-loader";
 
 function RecipeBody({ recipe }: { recipe: SimpleRecipe }) {
+  const { units } = useProfilePrefs();
+  const show = (text: string) => (units ? convertUnits(text, units) : text);
   return (
     <div className="dr-body">
       <p className="dr-meta">
@@ -15,14 +21,14 @@ function RecipeBody({ recipe }: { recipe: SimpleRecipe }) {
         </a>
       </p>
       <h4>Ingredients</h4>
-      <ul>{recipe.ingredients.map((i, n) => <li key={n}>{i}</li>)}</ul>
+      <ul>{recipe.ingredients.map((i, n) => <li key={n}>{show(i)}</li>)}</ul>
       <h4>Steps</h4>
-      <ol>{recipe.steps.map((s, n) => <li key={n}>{s}</li>)}</ol>
+      <ol>{recipe.steps.map((s, n) => <li key={n}>{show(s)}</li>)}</ol>
     </div>
   );
 }
 
-function RecipeRow({ dishId, entry }: { dishId: string; entry: RecipeEntry }) {
+function RecipeRow({ dishId, entry, liked }: { dishId: string; entry: RecipeEntry; liked: boolean }) {
   const [open, setOpen] = useState(false);
   const { saved, save, remove } = useSavedRecipesContext();
   const { busy, error, load } = useRecipeLoader();
@@ -40,7 +46,11 @@ function RecipeRow({ dishId, entry }: { dishId: string; entry: RecipeEntry }) {
   return (
     <li className="dr-row">
       <button className="dr-head" onClick={toggle} aria-expanded={open} disabled={busy}>
-        <span>{entry.label}</span>
+        <span className="dr-label">
+          {entry.starred && <StarIcon />}
+          {liked && <HeartIcon />}
+          {entry.label}
+        </span>
         <span aria-hidden>{busy ? "…" : open ? "−" : "+"}</span>
       </button>
       {error && (
@@ -82,10 +92,11 @@ function AddRecipe({ dishId }: { dishId: string }) {
 /** Simplified recipes saved under a dish, each opening to ingredients and short steps, plus a box to add more. */
 export function DishRecipes({ dishId }: { dishId: string }) {
   const { saved } = useSavedRecipesContext();
+  const liked = useClassicsContext().classics.liked.includes(dishId);
   const entries = entriesForDish(dishId, saved, SEED_RECIPES[dishId] ?? []);
   return (
     <div className="dr">
-      {entries.length > 0 && <ul className="dr-list">{entries.map((e) => <RecipeRow key={e.url} dishId={dishId} entry={e} />)}</ul>}
+      {entries.length > 0 && <ul className="dr-list">{entries.map((e) => <RecipeRow key={e.url} dishId={dishId} entry={e} liked={liked} />)}</ul>}
       <AddRecipe dishId={dishId} />
     </div>
   );

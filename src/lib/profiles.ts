@@ -1,3 +1,4 @@
+import type { UnitSystem } from "@/lib/convert-units";
 import type { DietId } from "@/lib/diets";
 
 export interface Profile {
@@ -10,6 +11,10 @@ export interface Profile {
   diets: DietId[];
   /** Foods this person wants no dish to use (an allergy or a dislike), as lowercase words. */
   avoid?: string[];
+  /** People eating at home (1 to 12); unset means Sous doesn't compare it with a dish's servings. */
+  household?: number;
+  /** Which measures recipe text is shown in; unset leaves recipes as the site wrote them. */
+  units?: UnitSystem;
 }
 
 /** The first profile keeps the keys the app used before profiles existed, so nothing saved is lost. */

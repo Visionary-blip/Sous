@@ -1309,3 +1309,14 @@ button.icon.on {
   flex: 1;
   min-width: 0;
 }
+
+.set-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.set-field > span {
+  color: var(--muted);
+  font-size: 0.85rem;
+}

@@ -1,9 +1,12 @@
 import { useState } from "react";
+import { StarIcon } from "@/components/marks";
 import { DishRecipes } from "@/components/dish-recipes";
 import { SEED_RECIPES } from "@/data/seed-recipes";
 import { useClassicsContext } from "@/lib/classics-context";
 import { coverColors } from "@/lib/cover";
 import type { RecipeMatch } from "@/lib/match";
+import { servingsNote } from "@/lib/household";
+import { useProfilePrefs } from "@/lib/profile-prefs-context";
 import { readiness } from "@/lib/readiness";
 import { suggestionLinks } from "@/lib/suggestion-links";
 
@@ -29,8 +32,10 @@ export function SuggestionBar({ match: m, plain }: Props) {
   const id = m.recipe.id;
   const liked = classics.liked.includes(id);
   const wished = classics.wish.includes(id);
+  const { household } = useProfilePrefs();
   const [from, to] = coverColors(m.recipe);
-  const note = m.usesExpiring.length > 0 ? `Uses up ${m.usesExpiring.slice(0, 2).map((g) => g.name).join(" & ")}` : readiness(m).text;
+  const status = m.usesExpiring.length > 0 ? `Uses up ${m.usesExpiring.slice(0, 2).map((g) => g.name).join(" & ")}` : readiness(m).text;
+  const note = `${status} · ${servingsNote(m.recipe.servings, household)}`;
 
   return (
     <div className={`sbar ${open ? "open" : ""} ${plain ? "plain" : ""} ${SEED_RECIPES[id] ? "fast" : ""}`}>
@@ -55,6 +60,7 @@ export function SuggestionBar({ match: m, plain }: Props) {
             {suggestionLinks(m.recipe.title).map((l) => (
               <li key={l.url}>
                 <a href={l.url} target="_blank" rel="noopener noreferrer">
+                  {l.starred && <StarIcon />}
                   {l.label} ↗
                 </a>
               </li>

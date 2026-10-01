@@ -1,4 +1,5 @@
 import { useState, type FormEvent } from "react";
+import type { UnitSystem } from "@/lib/convert-units";
 import { DIET_IDS, DIET_RULES } from "@/lib/diets";
 import { DEFAULT_PROFILE_ID } from "@/lib/profiles";
 import type { useProfiles } from "@/lib/use-profiles";
@@ -38,6 +39,27 @@ function ProfileList({ api }: { api: Api }) {
           <button onClick={() => setConfirming(false)}>Keep</button>
         </p>
       )}
+    </div>
+  );
+}
+
+function HomeSettings({ api }: { api: Api }) {
+  return (
+    <div className="set-block">
+      <h3>Household · {api.active.name}</h3>
+      <label className="set-field">
+        <span>People at home</span>
+        <input type="number" min={1} max={12} inputMode="numeric" value={api.active.household ?? ""} onChange={(e) => api.setHousehold(e.target.value)} placeholder="Not set" />
+      </label>
+      <label className="set-field">
+        <span>Measures</span>
+        <select value={api.active.units ?? ""} onChange={(e) => api.setUnits((e.target.value || undefined) as UnitSystem | undefined)}>
+          <option value="">As the recipe wrote them</option>
+          <option value="us">US (cups, oz, °F)</option>
+          <option value="metric">Metric (ml, g, °C)</option>
+        </select>
+      </label>
+      <small>Dishes that serve fewer people than your household are marked. Measures change the amounts and oven temperatures in saved recipe copies; your Fridge is left as you typed it.</small>
     </div>
   );
 }
@@ -156,6 +178,7 @@ export function SettingsMenu({ api }: { api: Api }) {
           <UsernameField key={api.active.id} api={api} />
           <DietPicker api={api} />
           <AvoidList api={api} />
+          <HomeSettings api={api} />
           <AddProfile onAdd={api.add} />
         </div>
       )}

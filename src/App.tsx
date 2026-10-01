@@ -13,6 +13,7 @@ import type { RecipeView } from "@/lib/recipe-view";
 import { SavedRecipesContext } from "@/lib/saved-recipes-context";
 import { SettingsMenu } from "@/components/settings-menu";
 import { fitsDiets, usesAvoided } from "@/lib/diets";
+import { ProfilePrefsContext } from "@/lib/profile-prefs-context";
 import { ProfileScopeContext } from "@/lib/storage";
 import { scopeOf } from "@/lib/profiles";
 import { useProfiles } from "@/lib/use-profiles";
@@ -87,6 +88,7 @@ function Kitchen({ profiles }: { profiles: ReturnType<typeof useProfiles> }) {
   return (
     <ClassicsContext.Provider value={classics}>
     <SavedRecipesContext.Provider value={savedRecipes}>
+    <ProfilePrefsContext.Provider value={{ household: profiles.active.household, units: profiles.active.units }}>
     <div className={`app ${cook.cooking ? "cooking" : ""} ${SUGGESTION_MODE ? "suggest-mode" : ""}`}>
       <header className="top">
         <h1>Sous</h1>
@@ -138,6 +140,7 @@ function Kitchen({ profiles }: { profiles: ReturnType<typeof useProfiles> }) {
         ))}
       </nav>
     </div>
+    </ProfilePrefsContext.Provider>
     </SavedRecipesContext.Provider>
     </ClassicsContext.Provider>
   );
