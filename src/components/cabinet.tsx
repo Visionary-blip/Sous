@@ -46,8 +46,7 @@ export function Cabinet({ staples, setStaples }: Props) {
   return (
     <section>
       <p className="intro">
-        Your staples bank: the spices, seasonings and sauces you usually keep around. Tap to mark what you have —{" "}
-        <strong>{inStock}</strong> in stock. Recipes count these automatically.
+        <strong>{inStock}</strong> {inStock === 1 ? "Item" : "Items"} in Cabinet
       </p>
 
       <form className="card add-form" onSubmit={add}>

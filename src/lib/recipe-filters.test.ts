@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { matchAll } from "@/lib/match";
-import { filterMatches, frontPicks } from "@/lib/recipe-filters";
+import { filterMatches } from "@/lib/recipe-filters";
 import type { GroceryItem, Recipe } from "@/types";
 
 const today = new Date(2026, 8, 29);
@@ -52,21 +52,5 @@ describe("filterMatches", () => {
   it("combines chips with AND and searches title and ingredients", () => {
     expect(filterMatches(rank(), "", ["ready", "use-up"])).toEqual([]);
     expect(ids(filterMatches(rank(), "FETA", []))).toEqual(["soon"]);
-  });
-});
-
-describe("frontPicks", () => {
-  it("puts food about to expire first, then what is ready", () => {
-    const ranked = rank().filter((m) => m.usesGroceries.length > 0);
-    expect(ids(frontPicks(ranked))).toEqual(["soon", "ready", "far"]);
-  });
-
-  it("caps the shelf at the count", () => {
-    expect(frontPicks(rank(), 2)).toHaveLength(2);
-  });
-
-  it("skips an expiring recipe that needs a big shop and falls back to the closest", () => {
-    const ranked = matchAll([recipe("big", 30, ["spinach", "a", "b", "c"])], GROCERIES, [], today);
-    expect(ids(frontPicks(ranked))).toEqual(["big"]);
   });
 });

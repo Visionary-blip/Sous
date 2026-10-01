@@ -1,50 +1,77 @@
-import { useState } from "react";
 import { RecipeCard } from "@/components/recipe-card";
+import { CUISINES } from "@/data/cuisines";
 import type { RecipeMatch } from "@/lib/match";
-import { BROWSE_CHIPS, filterMatches, type BrowseChip } from "@/lib/recipe-filters";
+import { groupByTimeOfDay } from "@/lib/meal-groups";
+import { BROWSE_CHIPS, filterMatches, sortByTitle, splitByFridge, FRIDGE_MIN_INGREDIENTS } from "@/lib/recipe-filters";
+import { useBrowseFilters } from "@/lib/use-browse-filters";
 
 interface Props {
   matches: RecipeMatch[];
   onOpen: (id: string) => void;
-  onBack: () => void;
 }
 
-export function Browse({ matches, onOpen, onBack }: Props) {
-  const [query, setQuery] = useState("");
-  const [chips, setChips] = useState<BrowseChip[]>([]);
-  const shown = filterMatches(matches, query, chips);
-
-  function toggleChip(id: BrowseChip) {
-    setChips((prev) => (prev.includes(id) ? prev.filter((c) => c !== id) : [...prev, id]));
-  }
+export function Browse({ matches, onOpen }: Props) {
+  const f = useBrowseFilters();
+  const shown = filterMatches(matches, f.query, f.chips, f.cuisines);
+  const { fromFridge, others } = splitByFridge(sortByTitle(shown));
+  const groups = groupByTimeOfDay(others);
 
   return (
     <section>
-      <button className="back" onClick={onBack}>
-        ← Back
-      </button>
-      <h2 className="screen-title">Browse all recipes</h2>
       <input
         className="search"
         type="search"
-        value={query}
-        onChange={(e) => setQuery(e.target.value)}
+        value={f.query}
+        onChange={(e) => f.setQuery(e.target.value)}
         placeholder="Search recipes or ingredients…"
         aria-label="Search recipes"
       />
       <div className="filters">
         {BROWSE_CHIPS.map((c) => (
-          <button key={c.id} className={`pill ${chips.includes(c.id) ? "on" : ""}`} aria-pressed={chips.includes(c.id)} onClick={() => toggleChip(c.id)}>
+          <button key={c.id} className={`pill ${f.chips.includes(c.id) ? "on" : ""}`} aria-pressed={f.chips.includes(c.id)} onClick={() => f.toggleChip(c.id)}>
             {c.label}
           </button>
         ))}
+        <button className={`pill ${f.cuisines.length > 0 ? "on" : ""}`} aria-expanded={f.ethnicityOpen} onClick={f.toggleEthnicity}>
+          Ethnicity{f.cuisines.length > 0 ? ` · ${f.cuisines.length}` : ""}
+        </button>
       </div>
+      {f.ethnicityOpen && (
+        <div className="filters" role="group" aria-label="Ethnicity">
+          {CUISINES.map((c) => (
+            <button key={c} className={`pill ${f.cuisines.includes(c) ? "on" : ""}`} aria-pressed={f.cuisines.includes(c)} onClick={() => f.toggleCuisine(c)}>
+              {c}
+            </button>
+          ))}
+        </div>
+      )}
       {shown.length === 0 && <p className="empty">No recipes match those filters.</p>}
-      <div className="grid">
-        {shown.map((m) => (
-          <RecipeCard key={m.recipe.id} match={m} onOpen={onOpen} />
-        ))}
-      </div>
+      {fromFridge.length > 0 && (
+        <div className="shelf-block">
+          <div className="sec-h">
+            <h2>From your fridge</h2>
+            <p>Uses at least {FRIDGE_MIN_INGREDIENTS} things you have</p>
+          </div>
+          <div className="grid">
+            {fromFridge.map((m) => (
+              <RecipeCard key={m.recipe.id} match={m} onOpen={onOpen} />
+            ))}
+          </div>
+        </div>
+      )}
+      {fromFridge.length > 0 && others.length > 0 && <h2 className="browse-divider">More recipes</h2>}
+      {groups.map((g) => (
+        <div key={g.id} className="shelf-block">
+          <div className="sec-h">
+            <h2>{g.label}</h2>
+          </div>
+          <div className="grid">
+            {g.items.map((m) => (
+              <RecipeCard key={m.recipe.id} match={m} onOpen={onOpen} />
+            ))}
+          </div>
+        </div>
+      ))}
     </section>
   );
 }

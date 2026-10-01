@@ -1,4 +1,5 @@
 import type { Recipe, RecipeIngredient } from "../types";
+import { OUTSOURCED_DISHES } from "./outsourced-dishes";
 
 /** Compact recipe definition: "name|amount" strings, with a trailing "?" for optional. */
 interface RecipeDef {
@@ -759,7 +760,7 @@ const DEFS: RecipeDef[] = [
     title: "Banana Bread",
     minutes: 70,
     servings: 8,
-    tags: ["baking", "vegetarian", "use-it-up"],
+    tags: ["dessert", "baking", "vegetarian", "use-it-up"],
     ingredients: [
       "banana|3 very ripe",
       "flour|1 1/2 cups",
@@ -823,7 +824,9 @@ const DEFS: RecipeDef[] = [
   },
 ];
 
-export const RECIPES: Recipe[] = DEFS.map((d) => ({
+const OUTSOURCED: RecipeDef[] = OUTSOURCED_DISHES.map((d) => ({ ...d, steps: [] }));
+
+export const RECIPES: Recipe[] = [...DEFS, ...OUTSOURCED].map((d) => ({
   ...d,
   ingredients: d.ingredients.map(parseIngredient),
 }));

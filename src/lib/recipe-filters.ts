@@ -1,3 +1,4 @@
+import { CUISINE_OF, type Cuisine } from "@/data/cuisines";
 import type { RecipeMatch } from "@/lib/match";
 
 export type BrowseChip = "ready" | "use-up" | "quick" | "almost";
@@ -24,19 +25,29 @@ function matchesQuery(m: RecipeMatch, query: string): boolean {
   return hay.join(" ").toLowerCase().includes(query);
 }
 
-/** Chips combine with AND, so each one you turn on narrows the list. */
-export function filterMatches(matches: RecipeMatch[], query: string, chips: BrowseChip[]): RecipeMatch[] {
-  const q = query.trim().toLowerCase();
-  return matches.filter((m) => chips.every((c) => CHIP_TESTS[c](m)) && (!q || matchesQuery(m, q)));
+/** With no cuisine on, everything passes; with several on, a recipe needs to be any one of them. */
+function matchesCuisine(m: RecipeMatch, cuisines: Cuisine[]): boolean {
+  if (cuisines.length === 0) return true;
+  const cuisine = CUISINE_OF[m.recipe.id];
+  return cuisine !== undefined && cuisines.includes(cuisine);
 }
 
-/**
- * The few recipes shown on the front: food about to expire first (but only where
- * a shopping trip isn't needed), then what is ready, then the closest of the rest
- * so the shelf is never empty. `ranked` must already be in recommendation order.
- */
-export function frontPicks(ranked: RecipeMatch[], count = 5): RecipeMatch[] {
-  const useItUp = ranked.filter((m) => m.usesExpiring.length > 0 && m.missing.length <= ALMOST_MAX_MISSING);
-  const ready = ranked.filter((m) => m.missing.length === 0);
-  return [...new Set([...useItUp, ...ready, ...ranked])].slice(0, count);
+/** The filter chips combine with AND, so each one you turn on narrows the list; cuisines combine with OR. */
+export function filterMatches(matches: RecipeMatch[], query: string, chips: BrowseChip[], cuisines: Cuisine[] = []): RecipeMatch[] {
+  const q = query.trim().toLowerCase();
+  return matches.filter((m) => chips.every((c) => CHIP_TESTS[c](m)) && matchesCuisine(m, cuisines) && (!q || matchesQuery(m, q)));
+}
+
+/** A to Z by title, ignoring case. Sorts a copy. */
+export function sortByTitle(matches: RecipeMatch[]): RecipeMatch[] {
+  return [...matches].sort((a, b) => a.recipe.title.localeCompare(b.recipe.title, undefined, { sensitivity: "base" }));
+}
+
+/** A dish counts as "from your fridge" when at least this many of its ingredients are groceries you have. */
+export const FRIDGE_MIN_INGREDIENTS = 2;
+
+/** Splits matches into those using enough of the fridge and the rest, keeping each list's order. */
+export function splitByFridge(matches: RecipeMatch[]): { fromFridge: RecipeMatch[]; others: RecipeMatch[] } {
+  const fromFridge = matches.filter((m) => m.usesGroceries.length >= FRIDGE_MIN_INGREDIENTS);
+  return { fromFridge, others: matches.filter((m) => !fromFridge.includes(m)) };
 }

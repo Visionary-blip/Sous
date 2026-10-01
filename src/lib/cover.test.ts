@@ -13,14 +13,15 @@ describe("mealOf", () => {
     expect(mealOf(tagged("dinner", "breakfast"))).toBe("breakfast");
   });
 
-  it("treats sides and baking as snacks", () => {
+  it("treats sides as snacks and dessert as its own meal", () => {
     expect(mealOf(tagged("side", "vegan"))).toBe("snack");
-    expect(mealOf(tagged("baking"))).toBe("snack");
+    expect(mealOf(tagged("dessert", "baking"))).toBe("dessert");
+    expect(mealOf(tagged("dessert", "dinner"))).toBe("dinner");
   });
 
-  it("gives every built-in recipe one of the four meals", () => {
+  it("gives every built-in recipe one of the five meals", () => {
     const meals = new Set(RECIPES.map(mealOf));
-    expect([...meals].sort()).toEqual(["breakfast", "dinner", "lunch", "snack"]);
+    expect([...meals].sort()).toEqual(["breakfast", "dessert", "dinner", "lunch", "snack"]);
   });
 });
 

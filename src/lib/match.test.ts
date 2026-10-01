@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { RECIPES } from "../data/recipes";
+import { OUTSOURCED_DISHES } from "../data/outsourced-dishes";
 import { starterStaples } from "../data/staples";
 import type { GroceryItem, Recipe, Staple } from "../types";
 import { normalize, satisfies } from "./ingredients";
@@ -125,11 +126,13 @@ describe("recommend", () => {
 });
 
 describe("recipe data", () => {
-  it("has unique ids and non-empty steps", () => {
+  it("has unique ids and non-empty steps (except outsourced dishes)", () => {
     const ids = RECIPES.map((r) => r.id);
     expect(new Set(ids).size).toBe(ids.length);
+    // Outsourced dishes link to recipes elsewhere and carry no steps of their own.
+    const outsourced = new Set(OUTSOURCED_DISHES.map((d) => d.id));
     for (const r of RECIPES) {
-      expect(r.steps.length).toBeGreaterThan(0);
+      if (!outsourced.has(r.id)) expect(r.steps.length).toBeGreaterThan(0);
       expect(r.ingredients.some((i) => !i.optional)).toBe(true);
     }
   });
