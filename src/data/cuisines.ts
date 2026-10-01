@@ -1,11 +1,11 @@
-export type Cuisine = "Asia" | "Central America" | "South America" | "American South" | "Romance" | "Northern Europe" | "American";
+export type Cuisine = "Asia" | "Southeast Asia" | "Central America" | "South America" | "American South" | "Latin" | "Northern Europe" | "American";
 
 /** The groups behind the Ethnicity button in Browse, in display order. */
-export const CUISINES: Cuisine[] = ["Asia", "Central America", "South America", "American South", "Romance", "Northern Europe", "American"];
+export const CUISINES: Cuisine[] = ["Asia", "Southeast Asia", "Central America", "South America", "American South", "Latin", "Northern Europe", "American"];
 
 /**
- * Which flavour group each dish belongs to (owner's groups, 2026-09-30). Asia is China, Japan, India,
- * Thailand and the rest; Romance is Italy, Spain, France and Portugal; Central America includes Mexico;
+ * Which flavour group each dish belongs to (owner's groups, 2026-09-30). Asia is China, Japan, Korea, India
+ * and the rest; Southeast Asia is Thailand and Vietnam (moved out of Asia 2026-10-01); Latin is Italy, Spain, France and Portugal; Central America includes Mexico;
  * Poutine counts as American. Assigned by hand. A dish that fits none is left out, so it shows only when
  * no group is selected.
  */
@@ -22,7 +22,7 @@ export const CUISINE_OF: Record<string, Cuisine> = {
   "sushi-rolls": "Asia",
   "general-tsos-chicken": "Asia",
   "sweet-and-sour-meatballs": "Asia",
-  "thai-green-curry": "Asia",
+  "thai-green-curry": "Southeast Asia",
   "japanese-curry": "Asia",
   // Central America (Mexico included)
   "chicken-fajitas": "Central America",
@@ -34,24 +34,24 @@ export const CUISINE_OF: Record<string, Cuisine> = {
   "steak-fajitas": "Central America",
   // American South
   "bbq-meatballs": "American South",
-  // Romance: Italy, Spain, France, Portugal
-  "spaghetti-aglio-olio": "Romance",
-  "pasta-marinara": "Romance",
-  "spaghetti-bolognese": "Romance",
-  "creamy-tuscan-pasta": "Romance",
-  "mushroom-risotto": "Romance",
-  "caprese-salad": "Romance",
-  "fettuccine-alfredo": "Romance",
-  "spaghetti-carbonara": "Romance",
-  "penne-alla-vodka": "Romance",
-  "pesto-pasta": "Romance",
-  "pasta-arrabbiata": "Romance",
-  "cacio-e-pepe": "Romance",
-  "spaghetti-and-meatballs": "Romance",
-  "margherita-pizza": "Romance",
-  lasagna: "Romance",
-  "garlic-shrimp": "Romance",
-  paella: "Romance",
+  // Latin: Italy, Spain, France, Portugal
+  "spaghetti-aglio-olio": "Latin",
+  "pasta-marinara": "Latin",
+  "spaghetti-bolognese": "Latin",
+  "creamy-tuscan-pasta": "Latin",
+  "mushroom-risotto": "Latin",
+  "caprese-salad": "Latin",
+  "fettuccine-alfredo": "Latin",
+  "spaghetti-carbonara": "Latin",
+  "penne-alla-vodka": "Latin",
+  "pesto-pasta": "Latin",
+  "pasta-arrabbiata": "Latin",
+  "cacio-e-pepe": "Latin",
+  "spaghetti-and-meatballs": "Latin",
+  "margherita-pizza": "Latin",
+  lasagna: "Latin",
+  "garlic-shrimp": "Latin",
+  paella: "Latin",
   // Northern Europe
   "swedish-meatballs": "Northern Europe",
   "fish-and-chips": "Northern Europe",
@@ -82,8 +82,8 @@ export const CUISINE_OF: Record<string, Cuisine> = {
   "cornbread": "American South",
   "pulled-pork-sandwiches": "American South",
   "chicken-and-waffles": "American South",
-  "pad-thai": "Asia",
-  "chicken-pho": "Asia",
+  "pad-thai": "Southeast Asia",
+  "chicken-pho": "Southeast Asia",
   "bibimbap": "Asia",
   "kimchi-fried-rice": "Asia",
   "chicken-ramen": "Asia",
@@ -95,20 +95,20 @@ export const CUISINE_OF: Record<string, Cuisine> = {
   "mapo-tofu": "Asia",
   "kung-pao-chicken": "Asia",
   "pork-dumplings": "Asia",
-  "thai-basil-chicken": "Asia",
+  "thai-basil-chicken": "Southeast Asia",
   "chilaquiles": "Central America",
   "chicken-enchiladas": "Central America",
   "huevos-rancheros": "Central America",
   "street-corn": "Central America",
   "chicken-pozole": "Central America",
-  "gazpacho": "Romance",
-  "spanish-tortilla": "Romance",
-  "ratatouille": "Romance",
-  "coq-au-vin": "Romance",
-  "quiche-lorraine": "Romance",
-  "croque-monsieur": "Romance",
-  "chicken-parmesan": "Romance",
-  "tiramisu": "Romance",
+  "gazpacho": "Latin",
+  "spanish-tortilla": "Latin",
+  "ratatouille": "Latin",
+  "coq-au-vin": "Latin",
+  "quiche-lorraine": "Latin",
+  "croque-monsieur": "Latin",
+  "chicken-parmesan": "Latin",
+  "tiramisu": "Latin",
   "shepherds-pie": "Northern Europe",
   "bangers-and-mash": "Northern Europe",
   "full-english-breakfast": "Northern Europe",

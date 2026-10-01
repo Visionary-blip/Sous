@@ -8,13 +8,10 @@ describe("suggestionLinks", () => {
     expect(links.every((l) => l.url.startsWith("https://"))).toBe(true);
   });
 
-  it("offers Allrecipes, BBC Good Food and NYT Cooking, and nothing else", () => {
-    expect(suggestionLinks("Paella").map((l) => l.label)).toEqual([
-      "Paella on Allrecipes",
-      "Paella on BBC Good Food",
-      "Paella on NYT Cooking",
-    ]);
-    expect(suggestionLinks("Paella")[2].url).toBe("https://cooking.nytimes.com/search?q=Paella");
+  it("offers the listed sites, with Serious Eats and Google left out", () => {
+    const labels = suggestionLinks("Paella").map((l) => l.label);
+    expect(labels).toEqual(["Allrecipes", "BBC Good Food", "Epicurious", "Budget Bytes", "RecipeTin Eats", "Delish", "King Arthur Baking", "NYT Cooking"].map((s) => `Paella on ${s}`));
+    expect(suggestionLinks("Paella").at(-1)?.url).toBe("https://cooking.nytimes.com/search?q=Paella");
   });
 
   it("encodes characters that would break a web address", () => {
