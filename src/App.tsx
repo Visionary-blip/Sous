@@ -12,7 +12,7 @@ import { FinishUp, type FinishUpRow } from "@/components/finish-up";
 import type { RecipeView } from "@/lib/recipe-view";
 import { SavedRecipesContext } from "@/lib/saved-recipes-context";
 import { SettingsMenu } from "@/components/settings-menu";
-import { fitsDiets } from "@/lib/diets";
+import { fitsDiets, usesAvoided } from "@/lib/diets";
 import { ProfileScopeContext } from "@/lib/storage";
 import { scopeOf } from "@/lib/profiles";
 import { useProfiles } from "@/lib/use-profiles";
@@ -53,8 +53,8 @@ function Kitchen({ profiles }: { profiles: ReturnType<typeof useProfiles> }) {
   }
 
   const matches = useMemo(() => matchAll(RECIPES, groceries, staples), [groceries, staples]);
-  // Diet hides dishes from the lists; a dish already being cooked or opened stays reachable through byId.
-  const visible = useMemo(() => matches.filter((m) => fitsDiets(m.recipe, profiles.active.diets)), [matches, profiles.active.diets]);
+  // Diet and avoided foods hide dishes from the lists; a dish already being cooked or opened stays reachable through byId.
+  const visible = useMemo(() => matches.filter((m) => fitsDiets(m.recipe, profiles.active.diets) && !usesAvoided(m.recipe, profiles.active.avoid ?? [])), [matches, profiles.active.diets, profiles.active.avoid]);
   const byId = (id: string | undefined) => matches.find((m) => m.recipe.id === id);
   const cookingMatch = byId(cook.cooking?.id);
   const opened = byId(view?.id);

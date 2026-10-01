@@ -8,6 +8,8 @@ export interface Profile {
   /** Kept only as a label; no text message is sent. */
   phone?: string;
   diets: DietId[];
+  /** Foods this person wants no dish to use (an allergy or a dislike), as lowercase words. */
+  avoid?: string[];
 }
 
 /** The first profile keeps the keys the app used before profiles existed, so nothing saved is lost. */
@@ -48,4 +50,10 @@ export function toggleDiet(diets: DietId[], diet: DietId): DietId[] {
 
 export function updateProfile(profiles: Profile[], id: string, change: Partial<Profile>): Profile[] {
   return profiles.map((p) => (p.id === id ? { ...p, ...change } : p));
+}
+
+/** Adds one food to an avoid list: trimmed, lowercase, no repeats, empty or very long entries ignored. */
+export function addAvoided(list: string[], raw: string): string[] {
+  const word = raw.trim().toLowerCase();
+  return word && word.length <= 30 && !list.includes(word) ? [...list, word] : list;
 }

@@ -42,6 +42,37 @@ function ProfileList({ api }: { api: Api }) {
   );
 }
 
+function AvoidList({ api }: { api: Api }) {
+  const [text, setText] = useState("");
+  const avoided = api.active.avoid ?? [];
+
+  function add(e: FormEvent) {
+    e.preventDefault();
+    api.addAvoid(text);
+    setText("");
+  }
+
+  return (
+    <form className="set-block" onSubmit={add}>
+      <h3>Foods to avoid · {api.active.name}</h3>
+      <div className="set-row">
+        <input value={text} onChange={(e) => setText(e.target.value)} placeholder="e.g. peanut, cilantro" aria-label="Food to avoid" />
+        <button type="submit">Add</button>
+      </div>
+      {avoided.length > 0 && (
+        <ul className="set-profiles">
+          {avoided.map((w) => (
+            <li key={w}>
+              <button type="button" onClick={() => api.removeAvoid(w)} aria-label={`Stop avoiding ${w}`}>{w} ✕</button>
+            </li>
+          ))}
+        </ul>
+      )}
+      <small>Any dish with that word in an ingredient is hidden, optional ingredients included.</small>
+    </form>
+  );
+}
+
 function UsernameField({ api }: { api: Api }) {
   const [text, setText] = useState(api.active.username ?? "");
   const [message, setMessage] = useState<string | null>(null);
@@ -124,6 +155,7 @@ export function SettingsMenu({ api }: { api: Api }) {
           <ProfileList api={api} />
           <UsernameField key={api.active.id} api={api} />
           <DietPicker api={api} />
+          <AvoidList api={api} />
           <AddProfile onAdd={api.add} />
         </div>
       )}

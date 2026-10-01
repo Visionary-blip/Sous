@@ -1,4 +1,4 @@
-import { toggleDiet, defaultProfiles, DEFAULT_PROFILE_ID, makeProfile, normalizeUsername, scopeOf, updateProfile, usernameError } from "@/lib/profiles";
+import { addAvoided, toggleDiet, defaultProfiles, DEFAULT_PROFILE_ID, makeProfile, normalizeUsername, scopeOf, updateProfile, usernameError } from "@/lib/profiles";
 import type { DietId } from "@/lib/diets";
 import { forgetScope, newId, usePersistentState } from "@/lib/storage";
 
@@ -28,6 +28,8 @@ export function useProfiles() {
       return problem;
     },
     toggleDiet: (diet: DietId) => setProfiles((all) => updateProfile(all, active.id, { diets: toggleDiet(active.diets, diet) })),
+    addAvoid: (raw: string) => setProfiles((all) => updateProfile(all, active.id, { avoid: addAvoided(active.avoid ?? [], raw) })),
+    removeAvoid: (word: string) => setProfiles((all) => updateProfile(all, active.id, { avoid: (active.avoid ?? []).filter((w) => w !== word) })),
     remove(id: string) {
       const gone = profiles.find((p) => p.id === id);
       if (!gone || id === DEFAULT_PROFILE_ID) return;

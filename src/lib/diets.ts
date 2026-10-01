@@ -49,3 +49,13 @@ export function fitsDiets(recipe: Recipe, diets: DietId[]): boolean {
   const needed = recipe.ingredients.filter((i) => !i.optional);
   return diets.every((d) => !needed.some((i) => hits(i.name, DIET_RULES[d])));
 }
+
+function wholeWord(word: string): RegExp {
+  return new RegExp(`\\b${word.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}s?\\b`);
+}
+
+/** Strict on purpose: unlike diets, an avoided food counts even when the ingredient is optional. */
+export function usesAvoided(recipe: Recipe, avoid: string[]): boolean {
+  const patterns = avoid.map(wholeWord);
+  return recipe.ingredients.some((i) => patterns.some((p) => p.test(i.name.toLowerCase())));
+}

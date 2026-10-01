@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { fitsDiets, type DietId } from "@/lib/diets";
+import { fitsDiets, usesAvoided, type DietId } from "@/lib/diets";
 import { RECIPES } from "@/data/recipes";
 
 const dish = (...ingredients: string[]) => ({
@@ -64,5 +64,18 @@ describe("the real dishes", () => {
     for (const d of ["vegetarian", "vegan", "gluten-free", "keto", "paleo"] as DietId[]) expect(count(d)).toBeGreaterThan(0);
     expect(count("vegan")).toBeLessThan(count("vegetarian"));
     expect(count("vegetarian")).toBeLessThan(RECIPES.length);
+  });
+});
+
+describe("usesAvoided", () => {
+  it("matches whole words and plurals, and counts optional ingredients", () => {
+    expect(usesAvoided(dish("peanut butter", "rice"), ["peanut"])).toBe(true);
+    expect(usesAvoided(dish("rice", "cilantro?"), ["cilantro"])).toBe(true);
+    expect(usesAvoided(dish("eggplant"), ["egg"])).toBe(false);
+    expect(usesAvoided(dish("rice"), [])).toBe(false);
+  });
+
+  it("copes with characters that mean something in a pattern", () => {
+    expect(usesAvoided(dish("rice"), ["c++", "(a"])).toBe(false);
   });
 });

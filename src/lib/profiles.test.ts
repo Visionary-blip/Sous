@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { DEFAULT_PROFILE_ID, defaultProfiles, makeProfile, normalizeUsername, scopeOf, toggleDiet, updateProfile, usernameError } from "@/lib/profiles";
+import { addAvoided, DEFAULT_PROFILE_ID, defaultProfiles, makeProfile, normalizeUsername, scopeOf, toggleDiet, updateProfile, usernameError } from "@/lib/profiles";
 
 describe("profiles", () => {
   it("keeps the first profile on the old, unprefixed keys and gives others their own prefix", () => {
@@ -40,5 +40,13 @@ describe("usernames", () => {
     const all = [{ ...makeProfile("a", "A", "", "sam") }, makeProfile("b", "B", "")];
     expect(usernameError(all, "b", "SAM")).toMatch(/already/);
     expect(usernameError(all, "a", "sam")).toBeNull();
+  });
+});
+
+describe("addAvoided", () => {
+  it("trims, lowercases, skips repeats and blanks", () => {
+    expect(addAvoided(["peanut"], "  Cilantro ")).toEqual(["peanut", "cilantro"]);
+    expect(addAvoided(["peanut"], "PEANUT")).toEqual(["peanut"]);
+    expect(addAvoided([], "   ")).toEqual([]);
   });
 });
