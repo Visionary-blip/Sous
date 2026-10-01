@@ -11,6 +11,11 @@ import { consume, applyChanges } from "@/lib/consume";
 import { FinishUp, type FinishUpRow } from "@/components/finish-up";
 import type { RecipeView } from "@/lib/recipe-view";
 import { SavedRecipesContext } from "@/lib/saved-recipes-context";
+import { SettingsMenu } from "@/components/settings-menu";
+import { fitsDiets } from "@/lib/diets";
+import { ProfileScopeContext } from "@/lib/storage";
+import { scopeOf } from "@/lib/profiles";
+import { useProfiles } from "@/lib/use-profiles";
 import { useClassics } from "@/lib/use-classics";
 import { useSavedRecipes } from "@/lib/use-saved-recipes";
 import { useCooking } from "@/lib/use-cooking";
@@ -31,7 +36,7 @@ const TABS: { id: Tab; label: string }[] = [
   { id: "recipes", label: "Recipes" },
 ];
 
-export default function App() {
+function Kitchen({ profiles }: { profiles: ReturnType<typeof useProfiles> }) {
   const [tab, setTab] = usePersistentState<Tab>("tab", () => "home");
   const [groceries, setGroceries] = usePersistentState<GroceryItem[]>("groceries", () => [], withGroups);
   const [staples, setStaples] = usePersistentState<Staple[]>("staples", starterStaples);
@@ -48,6 +53,8 @@ export default function App() {
   }
 
   const matches = useMemo(() => matchAll(RECIPES, groceries, staples), [groceries, staples]);
+  // Diet hides dishes from the lists; a dish already being cooked or opened stays reachable through byId.
+  const visible = useMemo(() => matches.filter((m) => fitsDiets(m.recipe, profiles.active.diets)), [matches, profiles.active.diets]);
   const byId = (id: string | undefined) => matches.find((m) => m.recipe.id === id);
   const cookingMatch = byId(cook.cooking?.id);
   const opened = byId(view?.id);
@@ -90,10 +97,10 @@ export default function App() {
           <RecipeScreen match={opened} classics={classics} cook={cook} onBack={() => setView(null)} onComplete={complete} />
         ) : (
           <>
-            {current === "home" && <Home matches={matches} classics={classics.classics} groceries={groceries} onOpen={openRecipe} onBrowse={() => goTo("recipes")} onPantry={() => goTo("pantry")} />}
+            {current === "home" && <Home settings={<SettingsMenu api={profiles} />} matches={visible} classics={classics.classics} groceries={groceries} onOpen={openRecipe} onBrowse={() => goTo("recipes")} onPantry={() => goTo("pantry")} />}
             {current === "pantry" && <Pantry groceries={groceries} setGroceries={setGroceries} />}
             {current === "cabinet" && <Cabinet staples={staples} setStaples={setStaples} />}
-            {current === "recipes" && <Recipes matches={matches} classics={classics} onOpen={openRecipe} />}
+            {current === "recipes" && <Recipes matches={visible} classics={classics} onOpen={openRecipe} />}
           </>
         )}
       </main>
@@ -133,5 +140,15 @@ export default function App() {
     </div>
     </SavedRecipesContext.Provider>
     </ClassicsContext.Provider>
+  );
+}
+
+export default function App() {
+  const profiles = useProfiles();
+  // Remounting per profile gives each person a fresh fridge, cabinet and Classics read from their own keys.
+  return (
+    <ProfileScopeContext.Provider value={scopeOf(profiles.active)}>
+      <Kitchen key={profiles.active.id} profiles={profiles} />
+    </ProfileScopeContext.Provider>
   );
 }

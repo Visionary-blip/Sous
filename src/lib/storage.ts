@@ -1,6 +1,19 @@
-import { useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 
 const PREFIX = "sous:";
+
+/** Which profile's data a component reads and writes; "" is the first profile (and the profile list itself). */
+export const ProfileScopeContext = createContext("");
+
+/** Deletes everything a removed profile saved. */
+export function forgetScope(scope: string): void {
+  if (!scope) return;
+  try {
+    Object.keys(localStorage).filter((k) => k.startsWith(PREFIX + scope)).forEach((k) => localStorage.removeItem(k));
+  } catch {
+    // Storage unavailable: nothing to clear.
+  }
+}
 
 function read<T>(key: string, fallback: () => T, migrate?: (saved: T) => T): T {
   try {
@@ -17,14 +30,15 @@ function read<T>(key: string, fallback: () => T, migrate?: (saved: T) => T): T {
 
 /** useState that persists to localStorage, so the kitchen survives reloads. */
 export function usePersistentState<T>(key: string, fallback: () => T, migrate?: (saved: T) => T) {
-  const [value, setValue] = useState<T>(() => read(key, fallback, migrate));
+  const scoped = useContext(ProfileScopeContext) + key;
+  const [value, setValue] = useState<T>(() => read(scoped, fallback, migrate));
   useEffect(() => {
     try {
-      localStorage.setItem(PREFIX + key, JSON.stringify(value));
+      localStorage.setItem(PREFIX + scoped, JSON.stringify(value));
     } catch {
       // Ignore quota / private-mode errors; state still works for this session.
     }
-  }, [key, value]);
+  }, [scoped, value]);
   return [value, setValue] as const;
 }
 

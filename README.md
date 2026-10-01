@@ -9,7 +9,7 @@ Sous tracks what's in your kitchen and suggests what to cook from it.
 
 When you tap "Complete" on a recipe, Sous subtracts the amounts it used from your Fridge (removing anything used up) and asks about any it can't work out.
 
-All data is saved in your browser (`localStorage`). There's no account or server of ours. The one exception is the recipe reader: under a dish, Sous can fetch a recipe page and keep a shortened copy (ingredients and short steps). It works only through `npm run dev` / `npm run preview`, via `recipe-proxy.ts`; a deployed or installed copy has no reader yet.
+All data is saved in your browser (`localStorage`). There's no account or server of ours; the gear on Home holds profiles that live on this device (each with its own fridge, cabinet, Classics and diet), not a sign-in. The one exception is the recipe reader: under a dish, Sous can fetch a recipe page and keep a shortened copy (ingredients and short steps). It works only through `npm run dev` / `npm run preview`, via `recipe-proxy.ts`; a deployed or installed copy has no reader yet.
 
 ## Running it
 

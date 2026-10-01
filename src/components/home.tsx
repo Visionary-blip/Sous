@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import { RecipeCard } from "@/components/recipe-card";
 import { expiringSoon, expiryLabel } from "@/lib/expiry";
 import { homeShelves } from "@/lib/home-shelves";
@@ -5,6 +6,8 @@ import type { RecipeMatch } from "@/lib/match";
 import type { Classics, GroceryItem } from "@/types";
 
 interface Props {
+  /** The settings gear, placed top left. */
+  settings: ReactNode;
   matches: RecipeMatch[];
   classics: Classics;
   groceries: GroceryItem[];
@@ -23,12 +26,13 @@ function subtitle(expiringCount: number): string {
   return `${expiringCount} ${expiringCount === 1 ? "thing" : "things"} to use up in the next few days.`;
 }
 
-export function Home({ matches, classics, groceries, onOpen, onBrowse, onPantry }: Props) {
+export function Home({ settings, matches, classics, groceries, onOpen, onBrowse, onPantry }: Props) {
   const shelves = homeShelves(matches, classics);
   const today = new Date();
   const soon = expiringSoon(groceries, today);
   return (
     <section>
+      {settings}
       <div className="greet">
         <h1>{greeting(new Date().getHours())}</h1>
         <p>{subtitle(soon.length)}</p>
