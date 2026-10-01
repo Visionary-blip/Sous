@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { DishRecipes } from "@/components/dish-recipes";
+import { SEED_RECIPES } from "@/data/seed-recipes";
 import { useClassicsContext } from "@/lib/classics-context";
 import { coverColors } from "@/lib/cover";
 import type { RecipeMatch } from "@/lib/match";
@@ -10,6 +11,15 @@ interface Props {
   match: RecipeMatch;
   /** Plain variant for list rows (Classics, Wishlist), which carry their own buttons. */
   plain?: boolean;
+}
+
+/** Marks a dish that already has recipes ready to open under it. */
+function BoltIcon() {
+  return (
+    <svg className="bolt" viewBox="0 0 24 24" width="14" height="14" aria-hidden>
+      <path d="M13 2 4 14h6l-1 8 9-12h-6z" fill="currentColor" />
+    </svg>
+  );
 }
 
 /** A dish name on a bar; opening it lists links to recipes for that dish on other sites. */
@@ -32,7 +42,10 @@ export function SuggestionBar({ match: m, plain }: Props) {
       >
         <strong>{m.recipe.title}</strong>
         <small>{note}</small>
-        <span aria-hidden>{open ? "−" : "+"}</span>
+        <span className="sbar-sign" aria-hidden>
+          {SEED_RECIPES[id] && <BoltIcon />}
+          {open ? "−" : "+"}
+        </span>
       </button>
       {open && (
         <div className="sbar-body">

@@ -1050,9 +1050,16 @@ button.icon.on {
   opacity: 0.85;
 }
 
-.sbar-head span {
+.sbar-head .sbar-sign {
   grid-area: sign;
+  display: flex;
+  align-items: center;
+  gap: 6px;
   font-size: 1.3rem;
+}
+
+.sbar-sign .bolt {
+  flex: none;
 }
 
 .sbar.plain .sbar-head {
