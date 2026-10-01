@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { coverColors, mealOf } from "@/lib/cover";
+import { coverBackground, coverColor, coverInk, mealOf } from "@/lib/cover";
 import { RECIPES } from "@/data/recipes";
 import type { Recipe } from "@/types";
 
@@ -25,9 +25,29 @@ describe("mealOf", () => {
   });
 });
 
-describe("coverColors", () => {
+describe("coverColor", () => {
+  it("is one solid colour, not a gradient", () => {
+    expect(coverColor(tagged("dinner"))).toMatch(/^#[0-9a-f]{6}$/);
+  });
+
   it("shares one colour across a meal", () => {
-    expect(coverColors(tagged("breakfast", "eggs"))).toEqual(coverColors(tagged("breakfast", "quick")));
-    expect(coverColors(tagged("lunch"))).not.toEqual(coverColors(tagged("dinner")));
+    expect(coverColor(tagged("breakfast", "eggs"))).toEqual(coverColor(tagged("breakfast", "quick")));
+    expect(coverColor(tagged("lunch"))).not.toEqual(coverColor(tagged("dinner")));
+  });
+});
+
+describe("coverInk", () => {
+  it("is dark on the light snack blue and white elsewhere", () => {
+    expect(coverInk(tagged("side"))).not.toBe("#ffffff");
+    expect(coverInk(tagged("dinner"))).toBe("#ffffff");
+  });
+});
+
+describe("coverBackground", () => {
+  it("fades from slightly darkened up to the solid meal colour, upward", () => {
+    const css = coverBackground(tagged("dinner"));
+    expect(css).toContain("to top");
+    expect(css).toContain("black");
+    expect(css.endsWith(`${coverColor(tagged("dinner"))})`)).toBe(true);
   });
 });

@@ -2,13 +2,13 @@ import type { Recipe } from "@/types";
 
 export type Meal = "breakfast" | "lunch" | "dinner" | "dessert" | "snack";
 
-/** Cover gradients per meal: breakfast green, lunch blue, snack lighter blue, dinner purple, dessert a dark bluish black. */
-const MEAL_COLORS: Record<Meal, [string, string]> = {
-  breakfast: ["#4cc38a", "#0f4a33"],
-  lunch: ["#4b8fe0", "#0d2547"],
-  snack: ["#8fd0ff", "#3d7fb8"],
-  dinner: ["#a78bfa", "#2b1f63"],
-  dessert: ["#1c2647", "#05070f"],
+/** Solid cover colour per meal: breakfast green, lunch blue, snack lighter blue, dinner purple, dessert a dark bluish black (gradients dropped 2026-10-01). */
+const MEAL_COLORS: Record<Meal, string> = {
+  breakfast: "#4cc38a",
+  lunch: "#4b8fe0",
+  snack: "#8fd0ff",
+  dinner: "#a78bfa",
+  dessert: "#1c2647",
 };
 
 const MEAL_ORDER: Meal[] = ["breakfast", "lunch", "dinner", "dessert"];
@@ -21,6 +21,20 @@ export function mealOf(recipe: Recipe): Meal {
   return MEAL_ORDER.find((m) => recipe.tags.includes(m)) ?? "snack";
 }
 
-export function coverColors(recipe: Recipe): [string, string] {
+/** How much black sits at the bottom edge of a cover; kept very small on purpose (owner, 2026-10-01). */
+const BLACK_AT_BOTTOM = 12;
+
+/** The cover's background: a very light fade from black at the bottom up into its solid meal colour. */
+export function coverBackground(recipe: Recipe): string {
+  const color = coverColor(recipe);
+  return `linear-gradient(to top, color-mix(in srgb, ${color} ${100 - BLACK_AT_BOTTOM}%, black), ${color})`;
+}
+
+/** Text colour that reads on the cover: dark on the light snack blue, white on the rest. */
+export function coverInk(recipe: Recipe): string {
+  return mealOf(recipe) === "snack" ? "#0d1428" : "#ffffff";
+}
+
+export function coverColor(recipe: Recipe): string {
   return MEAL_COLORS[mealOf(recipe)];
 }

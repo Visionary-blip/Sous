@@ -4,7 +4,7 @@ import { StarIcon } from "@/components/marks";
 import { DishRecipes } from "@/components/dish-recipes";
 import { SEED_RECIPES } from "@/data/seed-recipes";
 import { useClassicsContext } from "@/lib/classics-context";
-import { coverColors } from "@/lib/cover";
+import { coverBackground, coverInk } from "@/lib/cover";
 import type { RecipeMatch } from "@/lib/match";
 import { servingsNote } from "@/lib/household";
 import { useProfilePrefs } from "@/lib/profile-prefs-context";
@@ -34,7 +34,6 @@ export function SuggestionBar({ match: m, plain }: Props) {
   const liked = classics.liked.includes(id);
   const wished = classics.wish.includes(id);
   const { household } = useProfilePrefs();
-  const [from, to] = coverColors(m.recipe);
   const status = m.usesExpiring.length > 0 ? `Uses up ${m.usesExpiring.slice(0, 2).map((g) => g.name).join(" & ")}` : readiness(m).text;
   const note = `${status} · ${servingsNote(m.recipe.servings, household)}`;
 
@@ -42,7 +41,7 @@ export function SuggestionBar({ match: m, plain }: Props) {
     <div className={`sbar ${open ? "open" : ""} ${plain ? "plain" : ""} ${SEED_RECIPES[id] ? "fast" : ""}`}>
       <button
         className="sbar-head"
-        style={plain ? undefined : { background: `linear-gradient(90deg, ${from}, ${to})` }}
+        style={plain ? undefined : { background: coverBackground(m.recipe), color: coverInk(m.recipe), textShadow: coverInk(m.recipe) === "#ffffff" ? undefined : "none" }}
         onClick={() => setOpen(!open)}
         aria-expanded={open}
       >
