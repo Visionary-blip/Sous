@@ -1,4 +1,5 @@
-import { useState, type FormEvent } from "react";
+import { useState, type CSSProperties, type FormEvent } from "react";
+import { bubbleColor } from "@/lib/bubble-colors";
 import type { UnitSystem } from "@/lib/convert-units";
 import { DIET_IDS, DIET_RULES } from "@/lib/diets";
 import { DEFAULT_PROFILE_ID } from "@/lib/profiles";
@@ -60,6 +61,18 @@ function HomeSettings({ api }: { api: Api }) {
         </select>
       </label>
       <small>Dishes that serve fewer people than your household are marked. Measures change the amounts and oven temperatures in saved recipe copies; your Fridge is left as you typed it.</small>
+    </div>
+  );
+}
+
+function OrganicToggle({ api }: { api: Api }) {
+  const on = Boolean(api.active.organic);
+  return (
+    <div className="set-block">
+      <button type="button" className={`organic-btn ${on ? "on" : ""}`} aria-pressed={on} onClick={api.toggleOrganic}>
+        Organic
+      </button>
+      <small>{on ? "On: Where to buy searches for organic and lists organic-focused stores first, in green." : "Prefer organic when looking for where to buy missing items."}</small>
     </div>
   );
 }
@@ -147,17 +160,24 @@ function AddProfile({ onAdd }: { onAdd: Api["add"] }) {
 }
 
 function DietPicker({ api }: { api: Api }) {
+  const chosen = DIET_IDS.filter((d) => api.active.diets.includes(d) && DIET_RULES[d].note);
   return (
     <div className="set-block">
       <h3>Diet · {api.active.name}</h3>
-      {DIET_IDS.map((d) => (
-        <label key={d} className="set-diet">
-          <input type="checkbox" checked={api.active.diets.includes(d)} onChange={() => api.toggleDiet(d)} />
-          <span>
-            {DIET_RULES[d].label}
-            {DIET_RULES[d].note && <small>{DIET_RULES[d].note}</small>}
-          </span>
-        </label>
+      <div className="bubbles">
+        {DIET_IDS.map((d) => {
+          const on = api.active.diets.includes(d);
+          return (
+            <button key={d} type="button" className={`bubble ${on ? "on" : ""}`} style={{ "--bub": bubbleColor(d) } as CSSProperties} aria-pressed={on} onClick={() => api.toggleDiet(d)}>
+              {DIET_RULES[d].label}
+            </button>
+          );
+        })}
+      </div>
+      {chosen.map((d) => (
+        <small key={d}>
+          {DIET_RULES[d].label}: {DIET_RULES[d].note}
+        </small>
       ))}
       <small>Dishes with an ingredient that breaks a chosen diet are hidden. Sous matches by ingredient name, so check anything important.</small>
     </div>
@@ -176,6 +196,7 @@ export function SettingsMenu({ api }: { api: Api }) {
         <div className="settings-panel" role="dialog" aria-label="Settings">
           <ProfileList api={api} />
           <UsernameField key={api.active.id} api={api} />
+          <OrganicToggle api={api} />
           <DietPicker api={api} />
           <AvoidList api={api} />
           <HomeSettings api={api} />

@@ -12,15 +12,21 @@ export interface RecipeEntry {
   label: string;
   seeded: boolean;
   recipe: SavedRecipe | null;
+  /** BBC Good Food recipes carry a star and sit above the rest. */
+  starred: boolean;
+}
+
+export function isBbc(url: string): boolean {
+  return /(^|\.)bbcgoodfood\.com$/.test(new URL(url).hostname);
 }
 
 export function entriesForDish(dishId: string, saved: SavedRecipe[], seeds: SeedRecipe[]): RecipeEntry[] {
   const byUrl = new Map(saved.filter((r) => r.dishId === dishId).map((r) => [r.url, r]));
-  const seeded = seeds.map((s) => ({ url: s.url, label: s.label, seeded: true, recipe: byUrl.get(s.url) ?? null }));
+  const seeded = seeds.map((s) => ({ url: s.url, label: s.label, seeded: true, recipe: byUrl.get(s.url) ?? null, starred: isBbc(s.url) }));
   const own = [...byUrl.values()]
     .filter((r) => !seeds.some((s) => s.url === r.url))
-    .map((r) => ({ url: r.url, label: `${r.title} · ${r.source}`, seeded: false, recipe: r }));
-  return [...seeded, ...own];
+    .map((r) => ({ url: r.url, label: `${r.title} · ${r.source}`, seeded: false, recipe: r, starred: isBbc(r.url) }));
+  return [...seeded, ...own].sort((a, b) => Number(b.starred) - Number(a.starred));
 }
 
 export function saveRecipe(saved: SavedRecipe[], recipe: SavedRecipe): SavedRecipe[] {

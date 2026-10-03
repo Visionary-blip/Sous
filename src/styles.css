@@ -10,6 +10,8 @@
   --accent-text: #ffffff;
   --ok: #2e7d4f;
   --ok-soft: #e3f2e8;
+  --organic: #1f8a4c;
+  --organic-text: #ffffff;
   --warn: #5b3fb3;
   --warn-soft: #ece6fb;
   --danger: #b3261e;
@@ -33,6 +35,8 @@
     --accent-text: #04101f;
     --ok: #8fd6b0;
     --ok-soft: #12291f;
+  --organic: #3fbf7a;
+  --organic-text: #04170d;
     --warn: #b9a4f5;
     --warn-soft: #24204a;
     --danger: #ff7a66;
@@ -732,15 +736,7 @@ select.small {
   border-radius: 6px;
   display: block;
   aspect-ratio: 1;
-  background: linear-gradient(135deg, var(--c1), var(--c2));
   overflow: hidden;
-}
-
-.cover::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(180deg, transparent 45%, rgb(0 0 0 / 0.4));
 }
 
 .cover span {
@@ -1251,8 +1247,7 @@ button.icon.on {
   letter-spacing: 0.06em;
 }
 
-.set-block small,
-.set-diet small {
+.set-block small {
   color: var(--muted);
 }
 
@@ -1268,26 +1263,6 @@ button.icon.on {
 .set-profiles .on {
   border-color: var(--accent);
   color: var(--accent);
-}
-
-.set-diet {
-  display: flex;
-  gap: 8px;
-  align-items: flex-start;
-}
-
-.set-diet span {
-  display: flex;
-  flex-direction: column;
-}
-
-.set-diet input {
-  flex: none;
-  width: 18px;
-  height: 18px;
-  min-height: 0;
-  padding: 0;
-  margin-top: 2px;
 }
 
 .set-link {
@@ -1349,6 +1324,9 @@ button.icon.on {
 
 /* "Where to buy" for the missing ingredients of a dish. */
 .stores {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
   margin: 12px 0;
 }
 
@@ -1385,4 +1363,63 @@ button.icon.on {
 
 .stores-panel small {
   color: var(--muted);
+}
+
+/* Tiny "V" beside features that were V's idea. */
+.credit {
+  display: inline-block;
+  margin-left: 6px;
+  color: var(--muted);
+  font: 700 0.65rem/1 var(--font-body);
+  letter-spacing: 0.04em;
+  vertical-align: middle;
+  cursor: default;
+}
+
+.stores-panel {
+  flex-basis: 100%;
+}
+
+/* Organic: a bigger green button in settings, and green store links when it is on. */
+.organic-btn {
+  width: 100%;
+  min-height: 52px;
+  border: 2px solid var(--organic);
+  border-radius: 14px;
+  background: transparent;
+  color: var(--organic);
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.organic-btn.on {
+  background: var(--organic);
+  color: var(--organic-text);
+}
+
+.stores-row a.organic-link {
+  color: var(--organic);
+}
+
+/* Diet options: small bubbles, roughly half the height of the Organic button, each in its own cool colour (--bub). */
+.bubbles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.bubble {
+  min-height: 26px;
+  padding: 2px 12px;
+  border: 1.5px solid var(--bub);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--bub);
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.bubble.on {
+  background: var(--bub);
+  color: #04101f;
 }

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { FOOD_GROUPS, guessGroup } from "../lib/food-groups";
-import { expiryLabel } from "../lib/expiry";
+import { expiryLabel, expiryText } from "../lib/expiry";
 import { assumedExpiry } from "../lib/shelf-life";
 import { newId, todayIso } from "../lib/storage";
 import type { FoodGroup, GroceryItem } from "../types";
@@ -31,6 +31,7 @@ export function Pantry({ groceries, setGroceries }: Props) {
   const estimateFor = (n: string) => assumedExpiry(n, group ?? guessGroup(n), todayIso());
   // With one item the box shows its estimate; with several, each gets its own unless a date is picked.
   const shownDate = expiresOn || (names.length === 1 ? estimateFor(names[0]) : "");
+  const shown = shownDate ? expiryText(shownDate, today) : null;
 
   function add(e: React.FormEvent) {
     e.preventDefault();
@@ -91,19 +92,22 @@ export function Pantry({ groceries, setGroceries }: Props) {
             <input value={quantity} onChange={(e) => setQuantity(e.target.value)} placeholder="optional" />
           </label>
         </div>
+        <label className="field">
+          <span>Use by</span>
+          <input
+            type="date"
+            className={`date-field ${shown?.tone ?? ""}`}
+            value={shownDate}
+            onChange={(e) => setExpiresOn(e.target.value)}
+          />
+          <span className="date-note">
+            {shown && <span className={`badge ${shown.tone}`}>{shown.text}</span>}
+            <small className="muted">{dateHint(names.length, Boolean(expiresOn))}</small>
+          </span>
+        </label>
         <button className="primary" type="submit" disabled={!name.trim()}>
           Add
         </button>
-        <label className="field">
-          <span>Use by</span>
-          <input type="date" value={shownDate} onChange={(e) => setExpiresOn(e.target.value)} />
-          <small className="muted">{dateHint(names.length, Boolean(expiresOn))}</small>
-        </label>
-        {expiresOn && (
-          <button type="button" className="set-link" onClick={() => setExpiresOn("")}>
-            Use the estimate instead
-          </button>
-        )}
       </form>
 
       {groceries.length === 0 && (

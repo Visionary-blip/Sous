@@ -32,6 +32,7 @@ export function useProfiles() {
     toggleDiet: (diet: DietId) => setProfiles((all) => updateProfile(all, active.id, { diets: toggleDiet(active.diets, diet) })),
     addAvoid: (raw: string) => setProfiles((all) => updateProfile(all, active.id, { avoid: addAvoided(active.avoid ?? [], raw) })),
     removeAvoid: (word: string) => setProfiles((all) => updateProfile(all, active.id, { avoid: (active.avoid ?? []).filter((w) => w !== word) })),
+    toggleOrganic: () => setProfiles((all) => updateProfile(all, active.id, { organic: !active.organic })),
     setHousehold: (raw: string) => setProfiles((all) => updateProfile(all, active.id, { household: parseHousehold(raw) })),
     setUnits: (units: UnitSystem | undefined) => setProfiles((all) => updateProfile(all, active.id, { units })),
     remove(id: string) {

@@ -1,9 +1,18 @@
 import { daysUntil, isExpiringSoon } from "@/lib/match";
 import type { GroceryItem } from "@/types";
 
-export function expiryLabel(item: GroceryItem, today: Date): { text: string; tone: string } | null {
-  if (!item.expiresOn) return null;
-  const days = daysUntil(item.expiresOn, today);
+export interface ExpiryLabel {
+  text: string;
+  tone: string;
+}
+
+export function expiryLabel(item: GroceryItem, today: Date): ExpiryLabel | null {
+  return item.expiresOn ? expiryText(item.expiresOn, today) : null;
+}
+
+/** The wording and colour tone for a use-by date; the Fridge badges and the Add form share it. */
+export function expiryText(expiresOn: string, today: Date): ExpiryLabel {
+  const days = daysUntil(expiresOn, today);
   if (days < 0) return { text: `Expired ${-days}d ago`, tone: "danger" };
   if (days === 0) return { text: "Use today", tone: "danger" };
   if (days === 1) return { text: "Use by tomorrow", tone: "warn" };

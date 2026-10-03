@@ -88,7 +88,7 @@ function Kitchen({ profiles }: { profiles: ReturnType<typeof useProfiles> }) {
   return (
     <ClassicsContext.Provider value={classics}>
     <SavedRecipesContext.Provider value={savedRecipes}>
-    <ProfilePrefsContext.Provider value={{ household: profiles.active.household, units: profiles.active.units }}>
+    <ProfilePrefsContext.Provider value={{ household: profiles.active.household, units: profiles.active.units, organic: profiles.active.organic }}>
     <div className={`app ${cook.cooking ? "cooking" : ""} ${SUGGESTION_MODE ? "suggest-mode" : ""}`}>
       <header className="top">
         <h1>Sous</h1>

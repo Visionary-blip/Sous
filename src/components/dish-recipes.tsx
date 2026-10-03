@@ -1,5 +1,5 @@
 import { useState, type FormEvent } from "react";
-import { HeartIcon, StarIcon } from "@/components/marks";
+import { CreditMark, HeartIcon, StarIcon } from "@/components/marks";
 import { SEED_RECIPES } from "@/data/seed-recipes";
 import type { SimpleRecipe } from "@/lib/parse-recipe";
 import { convertUnits } from "@/lib/convert-units";
@@ -15,6 +15,7 @@ function RecipeBody({ recipe }: { recipe: SimpleRecipe }) {
   return (
     <div className="dr-body">
       <p className="dr-meta">
+        <CreditMark />{" "}
         {recipe.minutes ? `${recipe.minutes} min · ` : ""}shortened from{" "}
         <a href={recipe.url} target="_blank" rel="noopener noreferrer">
           {recipe.source} ↗

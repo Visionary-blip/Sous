@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { entriesForDish, removeRecipe, saveRecipe, type SavedRecipe } from "@/lib/saved-recipes";
+import { entriesForDish, isBbc, removeRecipe, saveRecipe, type SavedRecipe } from "@/lib/saved-recipes";
 
 const r = (dishId: string, url: string): SavedRecipe => ({ dishId, url, title: "T", source: "a.com", minutes: null, ingredients: ["x"], steps: ["y"] });
 const SEEDS = [{ url: "https://a.com/1", label: "One · a.com" }];
@@ -15,6 +15,15 @@ describe("entriesForDish", () => {
 
   it("ignores recipes saved under another dish", () => {
     expect(entriesForDish("pancakes", [r("paella", "https://c.com/3")], [])).toEqual([]);
+  });
+});
+
+describe("BBC ordering", () => {
+  it("stars BBC Good Food recipes and lists them first", () => {
+    const seeds = [{ url: "https://a.com/1", label: "A" }, { url: "https://www.bbcgoodfood.com/recipes/x", label: "B" }];
+    const rows = entriesForDish("pancakes", [r("pancakes", "https://c.com/3"), r("pancakes", "https://bbcgoodfood.com/y")], seeds);
+    expect(rows.map((e) => e.starred)).toEqual([true, true, false, false]);
+    expect(isBbc("https://notbbcgoodfood.com/")).toBe(false);
   });
 });
 

@@ -3,6 +3,7 @@ import type { UnitSystem } from "@/lib/convert-units";
 
 export interface ProfilePrefs {
   household?: number;
+  organic?: boolean;
   units?: UnitSystem;
 }
 
