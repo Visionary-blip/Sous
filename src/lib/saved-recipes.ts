@@ -1,4 +1,4 @@
-import type { SimpleRecipe } from "@/lib/parse-recipe";
+import type { SimpleRecipe } from "@api/recipe";
 import type { SeedRecipe } from "@/data/seed-recipes";
 
 /** A recipe saved under a dish; `seeded` ones came with Sous, the rest were pasted in by the owner. */

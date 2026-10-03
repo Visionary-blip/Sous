@@ -1,4 +1,4 @@
-import type { SimpleRecipe } from "@/lib/parse-recipe";
+import type { SimpleRecipe } from "@api/recipe";
 
 interface RecipeReply {
   recipe?: SimpleRecipe;

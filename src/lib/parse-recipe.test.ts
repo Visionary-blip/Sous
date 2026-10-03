@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { extractRecipe, minutesFromDuration, shortenStep } from "@/lib/parse-recipe";
+import { extractRecipe, minutesFromDuration, shortenStep } from "@api/recipe";
 
 const page = (json: unknown) => `<html><script type="application/ld+json">${JSON.stringify(json)}</script></html>`;
 const RECIPE = {

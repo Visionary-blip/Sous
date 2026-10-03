@@ -1,5 +1,5 @@
 // Bump VERSION to drop every old cache on the next visit.
-const VERSION = "sous-v3";
+const VERSION = "sous-v4";
 const FONT_HOSTS = ["fonts.googleapis.com", "fonts.gstatic.com"];
 
 self.addEventListener("install", (event) => {
@@ -23,7 +23,8 @@ self.addEventListener("fetch", (event) => {
   const url = new URL(request.url);
   if (request.mode === "navigate") {
     event.respondWith(networkFirstPage(request));
-  } else if (url.origin === self.location.origin) {
+  } else if (url.origin === self.location.origin && !url.pathname.startsWith("/api/")) {
+    // /api/ answers (recipe reads) are never cached here: the app saves recipes itself, and a cached error would stick.
     event.respondWith(cacheFirst(request));
   } else if (FONT_HOSTS.includes(url.hostname)) {
     event.respondWith(staleWhileRevalidate(request));

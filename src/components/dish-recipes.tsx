@@ -1,7 +1,7 @@
 import { useState, type FormEvent } from "react";
 import { CreditMark, HeartIcon, StarIcon } from "@/components/marks";
 import { SEED_RECIPES } from "@/data/seed-recipes";
-import type { SimpleRecipe } from "@/lib/parse-recipe";
+import type { SimpleRecipe } from "@api/recipe";
 import { convertUnits } from "@/lib/convert-units";
 import { useProfilePrefs } from "@/lib/profile-prefs-context";
 import { entriesForDish, type RecipeEntry } from "@/lib/saved-recipes";

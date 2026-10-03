@@ -1,5 +1,5 @@
 import { useState } from "react";
-import type { SimpleRecipe } from "@/lib/parse-recipe";
+import type { SimpleRecipe } from "@api/recipe";
 import { fetchSimpleRecipe } from "@/lib/recipe-api";
 
 /** Reads one recipe page through the helper, tracking the wait and any failure for the button that asked. */

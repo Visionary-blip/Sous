@@ -6,5 +6,11 @@ import { recipeProxy } from "./recipe-proxy.ts";
 export default defineConfig({
   plugins: [react(), recipeProxy()],
   // "@/" points at src/, so imports never need "../" (docs/conventions-typescript.md I1).
-  resolve: { alias: { "@": fileURLToPath(new URL("./src", import.meta.url)) } },
+  resolve: {
+    alias: {
+      "@": fileURLToPath(new URL("./src", import.meta.url)),
+      // The recipe reader lives in api/ so Vercel can deploy it as a function; "@api/" reaches it without "../".
+      "@api": fileURLToPath(new URL("./api", import.meta.url)),
+    },
+  },
 });
