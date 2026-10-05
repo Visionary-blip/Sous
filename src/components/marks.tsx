@@ -23,3 +23,13 @@ export function CreditMark() {
     </span>
   );
 }
+
+/** A cooking pot with a lid and two handles, for "I'm going to cook this". */
+export function PotIcon() {
+  return (
+    <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M5 10h14v7a3 3 0 0 1-3 3H8a3 3 0 0 1-3-3z" />
+      <path d="M3 12h2M19 12h2M4 10h16M10 7h4" />
+    </svg>
+  );
+}

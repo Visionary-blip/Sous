@@ -20,6 +20,9 @@ import { useProfiles } from "@/lib/use-profiles";
 import { useClassics } from "@/lib/use-classics";
 import { useSavedRecipes } from "@/lib/use-saved-recipes";
 import { ExpiryBanner } from "@/components/expiry-banner";
+import { ThawBanner } from "@/components/thaw-banner";
+import { CookPlanContext } from "@/lib/cook-plan-context";
+import { useCookPlan } from "@/lib/use-cook-plan";
 import { useExpiryAlerts } from "@/lib/use-expiry-alerts";
 import { useCooking } from "@/lib/use-cooking";
 import { withGroups } from "./lib/food-groups";
@@ -56,11 +59,13 @@ function Kitchen({ profiles }: { profiles: ReturnType<typeof useProfiles> }) {
     window.setTimeout(() => setToast(null), ms);
   }
 
+  const cookPlan = useCookPlan(flash);
   const matches = useMemo(() => matchAll(RECIPES, groceries, staples), [groceries, staples]);
   // Diet and avoided foods hide dishes from the lists; a dish already being cooked or opened stays reachable through byId.
   const visible = useMemo(() => matches.filter((m) => fitsDiets(m.recipe, profiles.active.diets) && !usesAvoided(m.recipe, profiles.active.avoid ?? [])), [matches, profiles.active.diets, profiles.active.avoid]);
   const byId = (id: string | undefined) => matches.find((m) => m.recipe.id === id);
   const cookingMatch = byId(cook.cooking?.id);
+  const plannedMatches = cookPlan.planned.map(byId).filter((m): m is RecipeMatch => m !== undefined);
   const opened = byId(view?.id);
 
   // Subtract what the recipe used; anything Sous can't work out is handed to the person.
@@ -91,6 +96,7 @@ function Kitchen({ profiles }: { profiles: ReturnType<typeof useProfiles> }) {
   return (
     <ClassicsContext.Provider value={classics}>
     <SavedRecipesContext.Provider value={savedRecipes}>
+    <CookPlanContext.Provider value={cookPlan}>
     <ProfilePrefsContext.Provider value={{ household: profiles.active.household, units: profiles.active.units, organic: profiles.active.organic }}>
     <div className={`app ${cook.cooking ? "cooking" : ""} ${SUGGESTION_MODE ? "suggest-mode" : ""}`}>
       <header className="top">
@@ -99,6 +105,7 @@ function Kitchen({ profiles }: { profiles: ReturnType<typeof useProfiles> }) {
 
       <main>
         <ExpiryBanner alerts={alerts} onFridge={() => goTo("pantry")} />
+        <ThawBanner planned={plannedMatches} alerts={alerts} onDone={cookPlan.unplan} />
         {opened ? (
           <RecipeScreen match={opened} classics={classics} cook={cook} onBack={() => setView(null)} onComplete={complete} />
         ) : (
@@ -145,6 +152,7 @@ function Kitchen({ profiles }: { profiles: ReturnType<typeof useProfiles> }) {
       </nav>
     </div>
     </ProfilePrefsContext.Provider>
+    </CookPlanContext.Provider>
     </SavedRecipesContext.Provider>
     </ClassicsContext.Provider>
   );

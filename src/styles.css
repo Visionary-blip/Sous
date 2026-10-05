@@ -1456,3 +1456,30 @@ button.icon.on {
   padding: 4px 12px;
   border-radius: 999px;
 }
+
+/* Freeze: a smaller, ice-blue button under Add; the Freezer bank below the fridge list. */
+.freeze-btn {
+  align-self: flex-start;
+  min-height: 34px;
+  padding: 4px 16px;
+  border: 1.5px solid #8fd0ff;
+  border-radius: 999px;
+  background: transparent;
+  color: #8fd0ff;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.freeze-btn:disabled {
+  opacity: 0.4;
+}
+
+.freezer h2 {
+  color: #8fd0ff;
+}
+
+.expiry-banner.thaw {
+  border-color: #8fd0ff;
+  background: transparent;
+  color: #8fd0ff;
+}

@@ -16,6 +16,8 @@ export interface GroceryItem {
   expiresOn?: string;
   /** True when Sous guessed the use-by date from the name rather than the person entering it. */
   expiryEstimated?: boolean;
+  /** Kept in the freezer: listed in the Freezer bank, with a much later use-by date. */
+  frozen?: boolean;
   addedOn: string;
 }
 

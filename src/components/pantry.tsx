@@ -1,13 +1,18 @@
 import { useState } from "react";
 import { FOOD_GROUPS, guessGroup } from "../lib/food-groups";
 import { expiryLabel, expiryText } from "../lib/expiry";
-import { assumedExpiry } from "../lib/shelf-life";
+import { FreezerBank } from "@/components/freezer-bank";
+import { assumedExpiry, assumedFrozenDays, assumedFrozenExpiry } from "../lib/shelf-life";
 import { newId, todayIso } from "../lib/storage";
 import type { FoodGroup, GroceryItem } from "../types";
 
 interface Props {
   groceries: GroceryItem[];
   setGroceries: (fn: (prev: GroceryItem[]) => GroceryItem[]) => void;
+}
+
+function freezerDays(name: string, group: FoodGroup | null): number {
+  return assumedFrozenDays(name, group ?? guessGroup(name));
 }
 
 function dateHint(count: number, picked: boolean): string {
@@ -28,21 +33,27 @@ export function Pantry({ groceries, setGroceries }: Props) {
     .split(",")
     .map((n) => n.trim())
     .filter(Boolean);
-  const estimateFor = (n: string) => assumedExpiry(n, group ?? guessGroup(n), todayIso());
+  const estimateFor = (n: string, frozen = false) => (frozen ? assumedFrozenExpiry : assumedExpiry)(n, group ?? guessGroup(n), todayIso());
   // With one item the box shows its estimate; with several, each gets its own unless a date is picked.
   const shownDate = expiresOn || (names.length === 1 ? estimateFor(names[0]) : "");
   const shown = shownDate ? expiryText(shownDate, today) : null;
 
   function add(e: React.FormEvent) {
     e.preventDefault();
+    log(false);
+  }
+
+  // Freezing logs the same item, but into the Freezer bank with a much later estimated use-by date.
+  function log(frozen: boolean) {
     if (!names.length) return;
     const added: GroceryItem[] = names.map((n) => ({
       id: newId(),
       name: n,
       group: group ?? guessGroup(n),
       quantity: names.length === 1 && quantity.trim() ? quantity.trim() : undefined,
-      expiresOn: expiresOn || estimateFor(n),
+      expiresOn: expiresOn || estimateFor(n, frozen),
       expiryEstimated: expiresOn ? undefined : true,
+      frozen: frozen || undefined,
       addedOn: todayIso(),
     }));
     setGroceries((prev) => [...added, ...prev]);
@@ -108,6 +119,10 @@ export function Pantry({ groceries, setGroceries }: Props) {
         <button className="primary" type="submit" disabled={!name.trim()}>
           Add
         </button>
+        <button type="button" className="freeze-btn" disabled={!name.trim()} onClick={() => log(true)}>
+          Freeze
+        </button>
+        {names.length === 1 && <small className="muted">Freeze files it under Freezer with a longer estimate (about {freezerDays(names[0], group)} days).</small>}
       </form>
 
       {groceries.length === 0 && (
@@ -117,7 +132,7 @@ export function Pantry({ groceries, setGroceries }: Props) {
       )}
 
       {FOOD_GROUPS.map((group) => {
-        const items = groceries.filter((g) => g.group === group).sort(byExpiry);
+        const items = groceries.filter((g) => g.group === group && !g.frozen).sort(byExpiry);
         if (!items.length) return null;
         return (
           <div key={group} className="group">
@@ -159,6 +174,7 @@ export function Pantry({ groceries, setGroceries }: Props) {
           </div>
         );
       })}
+      <FreezerBank items={groceries.filter((g) => g.frozen).sort(byExpiry)} today={today} onRemove={remove} />
     </section>
   );
 }

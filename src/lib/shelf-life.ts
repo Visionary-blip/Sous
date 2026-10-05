@@ -50,3 +50,28 @@ export function addDaysIso(fromIso: string, days: number): string {
 export function assumedExpiry(name: string, group: FoodGroup, fromIso: string): string {
   return addDaysIso(fromIso, assumedShelfDays(name, group));
 }
+
+/** Typical freezer life in days, from general rules of thumb (not food-safety advice); first matching rule wins. */
+const FROZEN_RULES: { days: number; words: string[] }[] = [
+  { days: 90, words: ["cooked", "leftover", "bread", "milk", "cream", "yogurt", "ricotta", "tortilla", "pasta"] },
+  { days: 120, words: ["ground", "mince", "sausage", "bacon", "ham"] },
+];
+
+const FROZEN_GROUP_DEFAULT: Record<FoodGroup, number> = {
+  Protein: 180,
+  Vegetables: 240,
+  Fruit: 240,
+  "Dairy & eggs": 90,
+  "Grains & starches": 90,
+  Other: 90,
+};
+
+export function assumedFrozenDays(name: string, group: FoodGroup): number {
+  const text = name.toLowerCase().replace(/[^a-z]+/g, " ");
+  const rule = FROZEN_RULES.find((r) => r.words.some((w) => hasWord(text, w)));
+  return rule?.days ?? FROZEN_GROUP_DEFAULT[group];
+}
+
+export function assumedFrozenExpiry(name: string, group: FoodGroup, fromIso: string): string {
+  return addDaysIso(fromIso, assumedFrozenDays(name, group));
+}
