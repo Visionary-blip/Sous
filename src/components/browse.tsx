@@ -2,7 +2,7 @@ import { RecipeCard } from "@/components/recipe-card";
 import { CUISINES } from "@/data/cuisines";
 import type { RecipeMatch } from "@/lib/match";
 import { groupByTimeOfDay } from "@/lib/meal-groups";
-import { BROWSE_CHIPS, filterMatches, sortByTitle, splitByFridge, FRIDGE_MIN_INGREDIENTS } from "@/lib/recipe-filters";
+import { BROWSE_CHIPS, filterMatches, sortByTitle } from "@/lib/recipe-filters";
 import { useBrowseFilters } from "@/lib/use-browse-filters";
 
 interface Props {
@@ -13,8 +13,8 @@ interface Props {
 export function Browse({ matches, onOpen }: Props) {
   const f = useBrowseFilters();
   const shown = filterMatches(matches, f.query, f.chips, f.cuisines);
-  const { fromFridge, others } = splitByFridge(sortByTitle(shown));
-  const groups = groupByTimeOfDay(others);
+  // The fridge-based picks live on Home; here every dish just sits in its time-of-day group, A to Z.
+  const groups = groupByTimeOfDay(sortByTitle(shown));
 
   return (
     <section>
@@ -46,20 +46,6 @@ export function Browse({ matches, onOpen }: Props) {
         </div>
       )}
       {shown.length === 0 && <p className="empty">No recipes match those filters.</p>}
-      {fromFridge.length > 0 && (
-        <div className="shelf-block">
-          <div className="sec-h">
-            <h2>From your fridge</h2>
-            <p>Uses at least {FRIDGE_MIN_INGREDIENTS} things you have</p>
-          </div>
-          <div className="grid">
-            {fromFridge.map((m) => (
-              <RecipeCard key={m.recipe.id} match={m} onOpen={onOpen} />
-            ))}
-          </div>
-        </div>
-      )}
-      {fromFridge.length > 0 && others.length > 0 && <h2 className="browse-divider">More recipes</h2>}
       {groups.map((g) => (
         <div key={g.id} className="shelf-block">
           <div className="sec-h">
