@@ -5,18 +5,27 @@ export interface TimeOfDay {
   minute: number;
 }
 
-/** What the person chose in Settings: the assumed time, or their own. */
+/**
+ * The dinner setting: a time that can be locked in. Locked, the pot plans straight for that time;
+ * unlocked ("set my own"), the pot asks each time and the saved time is only where its dials start.
+ */
 export interface DinnerPref {
-  custom: boolean;
+  locked: boolean;
   hour: number;
   minute: number;
 }
 
-/** The assumed dinnertime when the person hasn't set their own. */
+/** Where the dials start when nothing has been saved. */
 export const ASSUMED_DINNER: TimeOfDay = { hour: 18, minute: 0 };
 
+/** The saved time (locked or not), or the starting default. */
 export function dinnerTime(pref: DinnerPref | undefined): TimeOfDay {
-  return pref?.custom ? { hour: pref.hour, minute: pref.minute } : ASSUMED_DINNER;
+  return pref ? { hour: pref.hour, minute: pref.minute } : ASSUMED_DINNER;
+}
+
+/** The locked-in time, or null when the person sets one each time. */
+export function lockedTime(pref: DinnerPref | undefined): TimeOfDay | null {
+  return pref?.locked ? { hour: pref.hour, minute: pref.minute } : null;
 }
 
 export function to12h(t: TimeOfDay): { hour12: number; minute: number; pm: boolean } {

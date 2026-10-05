@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { matchRecipe } from "@/lib/match";
 import { anyDue, thawedOut, thawLine, thawMessage, thawNeeded, thawSchedule } from "@/lib/thaw";
 import { markAlerted, planMeal, upgradePlanned } from "@/lib/cook-plan";
-import { ASSUMED_DINNER, dinnerTime, formatTime } from "@/lib/dinner-time";
+import { ASSUMED_DINNER, dinnerTime, formatTime, lockedTime } from "@/lib/dinner-time";
 import type { GroceryItem, Recipe } from "@/types";
 
 const today = new Date(2026, 9, 4);
@@ -69,10 +69,15 @@ describe("planning a meal", () => {
     expect(second[1].dinnerAt).toBe(new Date(2026, 9, 5, 12, 0).toISOString());
   });
 
-  it("shows the person's own dinnertime", () => {
-    const own = { custom: true, hour: 11, minute: 30 };
-    expect(formatTime(dinnerTime(own))).toBe("11:30 AM");
-    expect(dinnerTime({ custom: false, hour: 11, minute: 30 })).toEqual(ASSUMED_DINNER);
+  it("starts on the saved time, locked or not, and on 6:00 PM when nothing is saved", () => {
+    expect(formatTime(dinnerTime({ locked: false, hour: 11, minute: 30 }))).toBe("11:30 AM");
+    expect(dinnerTime(undefined)).toEqual(ASSUMED_DINNER);
+  });
+
+  it("only treats a time as locked in when it is locked", () => {
+    expect(lockedTime({ locked: true, hour: 19, minute: 0 })).toEqual({ hour: 19, minute: 0 });
+    expect(lockedTime({ locked: false, hour: 19, minute: 0 })).toBeNull();
+    expect(lockedTime(undefined)).toBeNull();
   });
 
   it("marks one plan alerted and upgrades plans saved as bare ids", () => {

@@ -33,3 +33,13 @@ export function PotIcon() {
     </svg>
   );
 }
+
+/** A small padlock; closed when the time is locked in, open when it is not. */
+export function LockIcon({ locked }: { locked: boolean }) {
+  return (
+    <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="5" y="11" width="14" height="10" rx="2" />
+      <path d={locked ? "M8 11V8a4 4 0 0 1 8 0v3" : "M8 11V8a4 4 0 0 1 7.5-2"} />
+    </svg>
+  );
+}

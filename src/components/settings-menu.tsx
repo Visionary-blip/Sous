@@ -201,7 +201,7 @@ export function SettingsMenu({ api }: { api: Api }) {
           <DietPicker api={api} />
           <AvoidList api={api} />
           <HomeSettings api={api} />
-          <DinnerSettings profile={api.active} onCustom={api.setDinnerCustom} onTime={api.setDinnerTime} />
+          <DinnerSettings profile={api.active} onLocked={api.setDinnerLocked} onTime={api.setDinnerTime} />
           <AddProfile onAdd={api.add} />
         </div>
       )}

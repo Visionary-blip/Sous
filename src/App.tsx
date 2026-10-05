@@ -24,7 +24,7 @@ import { ThawBanner } from "@/components/thaw-banner";
 import { CookPlanContext } from "@/lib/cook-plan-context";
 import { useCookPlan } from "@/lib/use-cook-plan";
 import { DinnerDialog } from "@/components/dinner-dialog";
-import { dinnerTime } from "@/lib/dinner-time";
+import { dinnerTime, lockedTime } from "@/lib/dinner-time";
 import { thawedOut, thawSchedule, type ThawStep } from "@/lib/thaw";
 import { useNow } from "@/lib/use-now";
 import { useThawAlerts } from "@/lib/use-thaw-alerts";
@@ -83,6 +83,15 @@ function Kitchen({ profiles }: { profiles: ReturnType<typeof useProfiles> }) {
   const plannedMeal = cookPlan.planned.find((p) => p.id === potFor);
   const potStart = plannedMeal ? { hour: new Date(plannedMeal.dinnerAt).getHours(), minute: new Date(plannedMeal.dinnerAt).getMinutes() } : dinnerTime(profiles.active.dinner);
 
+  // With a locked-in dinnertime the pot plans straight away (a second press cancels); otherwise it asks.
+  function pressPot(m: RecipeMatch) {
+    const locked = lockedTime(profiles.active.dinner);
+    if (!locked) return setPotFor(m.recipe.id);
+    if (!cookPlan.isPlanned(m.recipe.id)) return cookPlan.plan(m, locked);
+    cookPlan.unplan(m.recipe.id);
+    flash(`Not cooking ${m.recipe.title}.`, 2500);
+  }
+
   // "It's out": the items come out of the freezer into the fridge, so the reminder clears by itself.
   function itsOut(steps: ThawStep[], dish: string) {
     setGroceries((prev) => thawedOut(prev, steps.map((s) => s.item.id), todayIso()));
@@ -118,7 +127,7 @@ function Kitchen({ profiles }: { profiles: ReturnType<typeof useProfiles> }) {
   return (
     <ClassicsContext.Provider value={classics}>
     <SavedRecipesContext.Provider value={savedRecipes}>
-    <CookPlanContext.Provider value={{ isPlanned: cookPlan.isPlanned, openPot: (m) => setPotFor(m.recipe.id) }}>
+    <CookPlanContext.Provider value={{ isPlanned: cookPlan.isPlanned, openPot: pressPot }}>
     <ProfilePrefsContext.Provider value={{ household: profiles.active.household, units: profiles.active.units, organic: profiles.active.organic }}>
     <div className={`app ${cook.cooking ? "cooking" : ""} ${SUGGESTION_MODE ? "suggest-mode" : ""}`}>
       <header className="top">

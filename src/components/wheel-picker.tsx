@@ -13,14 +13,22 @@ interface Props {
 export function WheelPicker({ options, index, onIndex, label }: Props) {
   const ref = useRef<HTMLDivElement>(null);
   const settle = useRef<number | undefined>(undefined);
+  // While Sous itself is moving the dial, scroll events must not be read back as the person's choice.
+  const moving = useRef(false);
+  const mounted = useRef(false);
 
   // Keep the dial on the chosen row when the choice changes from outside (a click, a key, a reset).
   useEffect(() => {
     const el = ref.current;
-    if (el && Math.round(el.scrollTop / ROW) !== index) el.scrollTo({ top: index * ROW, behavior: "smooth" });
+    if (!el || Math.round(el.scrollTop / ROW) === index) return;
+    moving.current = true;
+    window.setTimeout(() => (moving.current = false), 500);
+    el.scrollTo({ top: index * ROW, behavior: mounted.current ? "smooth" : "auto" });
+    mounted.current = true;
   }, [index]);
 
   function onScroll() {
+    if (moving.current) return;
     window.clearTimeout(settle.current);
     settle.current = window.setTimeout(() => {
       const picked = Math.min(options.length - 1, Math.max(0, Math.round((ref.current?.scrollTop ?? 0) / ROW)));

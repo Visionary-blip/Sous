@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { addAvoided, DEFAULT_PROFILE_ID, defaultProfiles, makeProfile, normalizeUsername, scopeOf, toggleDiet, updateProfile, usernameError } from "@/lib/profiles";
+import { upgradeDinner, addAvoided, DEFAULT_PROFILE_ID, defaultProfiles, makeProfile, normalizeUsername, scopeOf, toggleDiet, updateProfile, usernameError } from "@/lib/profiles";
 
 describe("profiles", () => {
   it("keeps the first profile on the old, unprefixed keys and gives others their own prefix", () => {
@@ -48,5 +48,15 @@ describe("addAvoided", () => {
     expect(addAvoided(["peanut"], "  Cilantro ")).toEqual(["peanut", "cilantro"]);
     expect(addAvoided(["peanut"], "PEANUT")).toEqual(["peanut"]);
     expect(addAvoided([], "   ")).toEqual([]);
+  });
+});
+
+describe("upgradeDinner", () => {
+  it("turns the old custom flag into locked and leaves new settings alone", () => {
+    const { diets, ...rest } = makeProfile("a", "A", "");
+    const old = { ...rest, diets, dinner: { custom: true, hour: 19, minute: 0 } };
+    expect(upgradeDinner([old])[0].dinner).toEqual({ locked: true, hour: 19, minute: 0 });
+    const fresh = { ...makeProfile("b", "B", ""), dinner: { locked: false, hour: 18, minute: 0 } };
+    expect(upgradeDinner([fresh])[0]).toBe(fresh);
   });
 });

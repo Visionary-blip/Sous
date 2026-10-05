@@ -67,3 +67,16 @@ export function addAvoided(list: string[], raw: string): string[] {
   const word = raw.trim().toLowerCase();
   return word && word.length <= 30 && !list.includes(word) ? [...list, word] : list;
 }
+
+/** A profile saved while the dinner choice was a "custom" flag. */
+interface LegacyProfile extends Omit<Profile, "dinner"> {
+  dinner: { custom: boolean; hour: number; minute: number };
+}
+
+/** Settings saved while the dinner choice was "custom" or not become "locked" or not. */
+export function upgradeDinner(saved: (Profile | LegacyProfile)[]): Profile[] {
+  return saved.map((p) => {
+    const d = p.dinner;
+    return d && "custom" in d ? { ...p, dinner: { locked: d.custom, hour: d.hour, minute: d.minute } } : (p as Profile);
+  });
+}

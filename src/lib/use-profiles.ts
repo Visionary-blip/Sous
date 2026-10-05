@@ -1,4 +1,4 @@
-import { addAvoided, toggleDiet, defaultProfiles, DEFAULT_PROFILE_ID, makeProfile, normalizeUsername, scopeOf, updateProfile, usernameError } from "@/lib/profiles";
+import { addAvoided, toggleDiet, defaultProfiles, upgradeDinner, DEFAULT_PROFILE_ID, makeProfile, normalizeUsername, scopeOf, updateProfile, usernameError } from "@/lib/profiles";
 import type { UnitSystem } from "@/lib/convert-units";
 import { dinnerTime, type TimeOfDay } from "@/lib/dinner-time";
 import type { DietId } from "@/lib/diets";
@@ -7,7 +7,7 @@ import { forgetScope, newId, usePersistentState } from "@/lib/storage";
 
 /** Who is using this device. Profiles are a convenience on this device, not a login: nothing is checked or sent. */
 export function useProfiles() {
-  const [profiles, setProfiles] = usePersistentState("profiles", defaultProfiles);
+  const [profiles, setProfiles] = usePersistentState("profiles", defaultProfiles, upgradeDinner);
   const [activeId, setActiveId] = usePersistentState("active-profile", () => DEFAULT_PROFILE_ID);
   const active = profiles.find((p) => p.id === activeId) ?? profiles[0];
 
@@ -35,8 +35,9 @@ export function useProfiles() {
     removeAvoid: (word: string) => setProfiles((all) => updateProfile(all, active.id, { avoid: (active.avoid ?? []).filter((w) => w !== word) })),
     toggleOrganic: () => setProfiles((all) => updateProfile(all, active.id, { organic: !active.organic })),
     /** Switch between the assumed dinnertime and the person's own; the own time starts from whatever is showing. */
-    setDinnerCustom: (custom: boolean) => setProfiles((all) => updateProfile(all, active.id, { dinner: { custom, ...dinnerTime(active.dinner) } })),
-    setDinnerTime: (t: TimeOfDay) => setProfiles((all) => updateProfile(all, active.id, { dinner: { custom: true, ...t } })),
+    // These read the profile from the latest list, not from this render, so a late dial event can't undo a lock change.
+    setDinnerLocked: (locked: boolean) => setProfiles((all) => all.map((p) => (p.id === active.id ? { ...p, dinner: { locked, ...dinnerTime(p.dinner) } } : p))),
+    setDinnerTime: (t: TimeOfDay) => setProfiles((all) => all.map((p) => (p.id === active.id ? { ...p, dinner: { locked: Boolean(p.dinner?.locked), ...t } } : p))),
     setHousehold: (raw: string) => setProfiles((all) => updateProfile(all, active.id, { household: parseHousehold(raw) })),
     setUnits: (units: UnitSystem | undefined) => setProfiles((all) => updateProfile(all, active.id, { units })),
     remove(id: string) {
