@@ -1458,8 +1458,12 @@ button.icon.on {
 }
 
 /* Freeze: a smaller, ice-blue button under Add; the Freezer bank below the fridge list. */
-.freeze-btn {
+.freeze-wrap {
+  position: relative;
   align-self: flex-start;
+}
+
+.freeze-btn {
   min-height: 34px;
   padding: 4px 16px;
   border: 1.5px solid #8fd0ff;
@@ -1482,4 +1486,37 @@ button.icon.on {
   border-color: #8fd0ff;
   background: transparent;
   color: #8fd0ff;
+}
+
+/* Snowflakes that sprinkle off the Freeze button; they fall and fade, then are removed. */
+.flakes {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.flake {
+  position: absolute;
+  top: 50%;
+  color: #cfeaff;
+  line-height: 1;
+  opacity: 0;
+  animation: flake-fall ease-out forwards;
+}
+
+@keyframes flake-fall {
+  0% {
+    opacity: 1;
+    transform: translate(0, 0) rotate(0) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(var(--dx), var(--dy)) rotate(var(--rot)) scale(0.5);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .flake {
+    animation: none;
+  }
 }

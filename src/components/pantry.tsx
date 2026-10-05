@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { FOOD_GROUPS, guessGroup } from "../lib/food-groups";
 import { expiryLabel, expiryText } from "../lib/expiry";
+import { FreezeButton } from "@/components/freeze-button";
 import { FreezerBank } from "@/components/freezer-bank";
 import { assumedExpiry, assumedFrozenDays, assumedFrozenExpiry } from "../lib/shelf-life";
 import { newId, todayIso } from "../lib/storage";
@@ -119,9 +120,7 @@ export function Pantry({ groceries, setGroceries }: Props) {
         <button className="primary" type="submit" disabled={!name.trim()}>
           Add
         </button>
-        <button type="button" className="freeze-btn" disabled={!name.trim()} onClick={() => log(true)}>
-          Freeze
-        </button>
+        <FreezeButton disabled={!name.trim()} onFreeze={() => log(true)} />
         {names.length === 1 && <small className="muted">Freeze files it under Freezer with a longer estimate (about {freezerDays(names[0], group)} days).</small>}
       </form>
 
