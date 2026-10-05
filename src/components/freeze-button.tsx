@@ -4,14 +4,14 @@ import { makeSnowflakes, type Snowflake } from "@/lib/snowflakes";
 const FLAKES_PER_PRESS = 9;
 const MAX_MS = 1300;
 
-/** The Freeze button: pressing it also sprinkles a few tiny snowflakes off the button. */
-export function FreezeButton({ disabled, onFreeze }: { disabled: boolean; onFreeze: () => void }) {
+/** The Freeze switch: on means the next Add files the item in the freezer. Turning it on sprinkles a few tiny snowflakes. */
+export function FreezeButton({ on, onToggle }: { on: boolean; onToggle: () => void }) {
   const [flakes, setFlakes] = useState<Snowflake[]>([]);
   const nextId = useRef(0);
 
   function press() {
-    onFreeze();
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    onToggle();
+    if (on || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const burst = makeSnowflakes(FLAKES_PER_PRESS, nextId.current);
     nextId.current += FLAKES_PER_PRESS;
     setFlakes((current) => [...current, ...burst]);
@@ -21,7 +21,7 @@ export function FreezeButton({ disabled, onFreeze }: { disabled: boolean; onFree
 
   return (
     <span className="freeze-wrap">
-      <button type="button" className="freeze-btn" disabled={disabled} onClick={press}>
+      <button type="button" className={`freeze-btn ${on ? "on" : ""}`} aria-pressed={on} onClick={press}>
         Freeze
       </button>
       <span className="flakes" aria-hidden>

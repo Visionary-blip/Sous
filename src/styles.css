@@ -1474,8 +1474,9 @@ button.icon.on {
   font-weight: 600;
 }
 
-.freeze-btn:disabled {
-  opacity: 0.4;
+.freeze-btn.on {
+  background: #8fd0ff;
+  color: #04101f;
 }
 
 .freezer h2 {

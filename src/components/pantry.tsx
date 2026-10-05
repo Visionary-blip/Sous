@@ -16,6 +16,12 @@ function freezerDays(name: string, group: FoodGroup | null): number {
   return assumedFrozenDays(name, group ?? guessGroup(name));
 }
 
+function freezeHint(freezing: boolean, names: string[], group: FoodGroup | null): string {
+  if (!freezing) return "Freeze, then Add, to file it under Freezer with a longer estimate.";
+  const days = names.length === 1 ? ` (about ${freezerDays(names[0], group)} days)` : "";
+  return `Add will file it under Freezer${days}.`;
+}
+
 function dateHint(count: number, picked: boolean): string {
   if (picked) return "Your date.";
   if (count === 0) return "Sous estimates a use-by date from what you type. Change it here if it's wrong.";
@@ -28,6 +34,8 @@ export function Pantry({ groceries, setGroceries }: Props) {
   // null means "let Sous guess from the name"; picking one overrides the guess.
   const [group, setGroup] = useState<FoodGroup | null>(null);
   const [expiresOn, setExpiresOn] = useState("");
+  // Freeze only chooses where the next Add files the item; nothing is logged until Add is pressed.
+  const [freezing, setFreezing] = useState(false);
   const today = new Date();
   // Allow adding several at once: "eggs, milk, spinach".
   const names = name
@@ -36,17 +44,14 @@ export function Pantry({ groceries, setGroceries }: Props) {
     .filter(Boolean);
   const estimateFor = (n: string, frozen = false) => (frozen ? assumedFrozenExpiry : assumedExpiry)(n, group ?? guessGroup(n), todayIso());
   // With one item the box shows its estimate; with several, each gets its own unless a date is picked.
-  const shownDate = expiresOn || (names.length === 1 ? estimateFor(names[0]) : "");
+  const shownDate = expiresOn || (names.length === 1 ? estimateFor(names[0], freezing) : "");
   const shown = shownDate ? expiryText(shownDate, today) : null;
 
+  // With Freeze on, the same item goes into the Freezer bank with a much later estimated use-by date.
   function add(e: React.FormEvent) {
     e.preventDefault();
-    log(false);
-  }
-
-  // Freezing logs the same item, but into the Freezer bank with a much later estimated use-by date.
-  function log(frozen: boolean) {
     if (!names.length) return;
+    const frozen = freezing;
     const added: GroceryItem[] = names.map((n) => ({
       id: newId(),
       name: n,
@@ -62,6 +67,7 @@ export function Pantry({ groceries, setGroceries }: Props) {
     setQuantity("");
     setExpiresOn("");
     setGroup(null);
+    setFreezing(false);
   }
 
   function remove(id: string) {
@@ -120,8 +126,8 @@ export function Pantry({ groceries, setGroceries }: Props) {
         <button className="primary" type="submit" disabled={!name.trim()}>
           Add
         </button>
-        <FreezeButton disabled={!name.trim()} onFreeze={() => log(true)} />
-        {names.length === 1 && <small className="muted">Freeze files it under Freezer with a longer estimate (about {freezerDays(names[0], group)} days).</small>}
+        <FreezeButton on={freezing} onToggle={() => setFreezing(!freezing)} />
+        <small className="muted">{freezeHint(freezing, names, group)}</small>
       </form>
 
       {groceries.length === 0 && (
