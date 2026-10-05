@@ -1,3 +1,4 @@
+import type { DinnerPref } from "@/lib/dinner-time";
 import type { UnitSystem } from "@/lib/convert-units";
 import type { DietId } from "@/lib/diets";
 
@@ -13,6 +14,8 @@ export interface Profile {
   avoid?: string[];
   /** Prefer organic: store searches ask for organic and favour organic-focused shops. */
   organic?: boolean;
+  /** Dinnertime for thaw reminders; unset means the assumed time. */
+  dinner?: DinnerPref;
   /** People eating at home (1 to 12); unset means Sous doesn't compare it with a dish's servings. */
   household?: number;
   /** Which measures recipe text is shown in; unset leaves recipes as the site wrote them. */

@@ -1,28 +1,37 @@
-import type { RecipeMatch } from "@/lib/match";
-import { thawNeeded } from "@/lib/thaw";
+import { takeOutLabel } from "@/lib/dinner-time";
+import type { ThawStep } from "@/lib/thaw";
 import type { useExpiryAlerts } from "@/lib/use-expiry-alerts";
 
-interface Props {
-  /** Matches for the dishes the person planned to cook. */
-  planned: RecipeMatch[];
-  alerts: ReturnType<typeof useExpiryAlerts>;
-  onDone: (id: string) => void;
+export interface ThawBannerRow {
+  id: string;
+  dish: string;
+  steps: ThawStep[];
 }
 
-/** A reminder for each planned dish that needs something out of the freezer; the same style as the use-by notice. */
-export function ThawBanner({ planned, alerts, onDone }: Props) {
-  const rows = planned.map((m) => ({ m, thaw: thawNeeded(m) })).filter((r) => r.thaw.length > 0);
+interface Props {
+  rows: ThawBannerRow[];
+  now: Date;
+  alerts: ReturnType<typeof useExpiryAlerts>;
+  /** "It's out": the person took these items out of the freezer. */
+  onOut: (steps: ThawStep[], dish: string) => void;
+  onCancel: (id: string) => void;
+}
+
+/** A reminder for each planned dish that needs something out of the freezer, with when to take it out. */
+export function ThawBanner({ rows, now, alerts, onOut, onCancel }: Props) {
   if (rows.length === 0) return null;
   return (
     <>
-      {rows.map(({ m, thaw }) => (
-        <div key={m.recipe.id} className="expiry-banner thaw" role="status">
+      {rows.map(({ id, dish, steps }) => (
+        <div key={id} className="expiry-banner thaw" role="status">
           <p>
-            <strong>Thaw for {m.recipe.title}:</strong> {thaw.map((t) => t.name).join(", ")} (in the freezer)
+            <strong>Thaw for {dish}:</strong>{" "}
+            {steps.map((s) => `${s.item.name} (take out ${takeOutLabel(s.outAt, now)}, about ${s.hours} h)`).join("; ")}
           </p>
           <div className="expiry-actions">
+            <button type="button" onClick={() => onOut(steps, dish)}>It's out</button>
             {alerts.permission === "default" && <button type="button" onClick={alerts.enable}>Turn on alerts</button>}
-            <button type="button" onClick={() => onDone(m.recipe.id)}>Done</button>
+            <button type="button" onClick={() => onCancel(id)}>Not cooking</button>
           </div>
         </div>
       ))}

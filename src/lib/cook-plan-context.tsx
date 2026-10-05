@@ -1,9 +1,13 @@
 import { createContext, useContext } from "react";
-import type { useCookPlan } from "@/lib/use-cook-plan";
+import type { RecipeMatch } from "@/lib/match";
 
-type CookPlanApi = ReturnType<typeof useCookPlan>;
+interface CookPlanApi {
+  isPlanned: (id: string) => boolean;
+  /** Opens the dinner-time pop-up for a dish. */
+  openPot: (match: RecipeMatch) => void;
+}
 
-/** Lets any dish bar plan itself without every screen passing the handler down. */
+/** Lets any dish bar open the dinner pop-up without every screen passing the handler down. */
 export const CookPlanContext = createContext<CookPlanApi | null>(null);
 
 export function useCookPlanContext(): CookPlanApi {

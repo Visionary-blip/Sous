@@ -1,5 +1,6 @@
 import { addAvoided, toggleDiet, defaultProfiles, DEFAULT_PROFILE_ID, makeProfile, normalizeUsername, scopeOf, updateProfile, usernameError } from "@/lib/profiles";
 import type { UnitSystem } from "@/lib/convert-units";
+import { dinnerTime, type TimeOfDay } from "@/lib/dinner-time";
 import type { DietId } from "@/lib/diets";
 import { parseHousehold } from "@/lib/household";
 import { forgetScope, newId, usePersistentState } from "@/lib/storage";
@@ -33,6 +34,9 @@ export function useProfiles() {
     addAvoid: (raw: string) => setProfiles((all) => updateProfile(all, active.id, { avoid: addAvoided(active.avoid ?? [], raw) })),
     removeAvoid: (word: string) => setProfiles((all) => updateProfile(all, active.id, { avoid: (active.avoid ?? []).filter((w) => w !== word) })),
     toggleOrganic: () => setProfiles((all) => updateProfile(all, active.id, { organic: !active.organic })),
+    /** Switch between the assumed dinnertime and the person's own; the own time starts from whatever is showing. */
+    setDinnerCustom: (custom: boolean) => setProfiles((all) => updateProfile(all, active.id, { dinner: { custom, ...dinnerTime(active.dinner) } })),
+    setDinnerTime: (t: TimeOfDay) => setProfiles((all) => updateProfile(all, active.id, { dinner: { custom: true, ...t } })),
     setHousehold: (raw: string) => setProfiles((all) => updateProfile(all, active.id, { household: parseHousehold(raw) })),
     setUnits: (units: UnitSystem | undefined) => setProfiles((all) => updateProfile(all, active.id, { units })),
     remove(id: string) {

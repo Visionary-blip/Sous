@@ -23,6 +23,11 @@ import { ExpiryBanner } from "@/components/expiry-banner";
 import { ThawBanner } from "@/components/thaw-banner";
 import { CookPlanContext } from "@/lib/cook-plan-context";
 import { useCookPlan } from "@/lib/use-cook-plan";
+import { DinnerDialog } from "@/components/dinner-dialog";
+import { dinnerTime } from "@/lib/dinner-time";
+import { thawedOut, thawSchedule, type ThawStep } from "@/lib/thaw";
+import { useNow } from "@/lib/use-now";
+import { useThawAlerts } from "@/lib/use-thaw-alerts";
 import { useExpiryAlerts } from "@/lib/use-expiry-alerts";
 import { useCooking } from "@/lib/use-cooking";
 import { withGroups } from "./lib/food-groups";
@@ -30,7 +35,7 @@ import { Pantry } from "./components/pantry";
 import { Recipes } from "./components/recipes";
 import { starterStaples } from "./data/staples";
 import { isExpiringSoon } from "./lib/match";
-import { usePersistentState } from "./lib/storage";
+import { todayIso, usePersistentState } from "./lib/storage";
 import type { GroceryItem, Staple } from "./types";
 
 type Tab = "home" | "pantry" | "cabinet" | "recipes";
@@ -59,13 +64,30 @@ function Kitchen({ profiles }: { profiles: ReturnType<typeof useProfiles> }) {
     window.setTimeout(() => setToast(null), ms);
   }
 
-  const cookPlan = useCookPlan(flash);
+  const now = useNow();
+  const cookPlan = useCookPlan(flash, profiles.active.dinner);
+  const [potFor, setPotFor] = useState<string | null>(null);
   const matches = useMemo(() => matchAll(RECIPES, groceries, staples), [groceries, staples]);
   // Diet and avoided foods hide dishes from the lists; a dish already being cooked or opened stays reachable through byId.
   const visible = useMemo(() => matches.filter((m) => fitsDiets(m.recipe, profiles.active.diets) && !usesAvoided(m.recipe, profiles.active.avoid ?? [])), [matches, profiles.active.diets, profiles.active.avoid]);
   const byId = (id: string | undefined) => matches.find((m) => m.recipe.id === id);
   const cookingMatch = byId(cook.cooking?.id);
-  const plannedMatches = cookPlan.planned.map(byId).filter((m): m is RecipeMatch => m !== undefined);
+  const thawRows = cookPlan.planned.flatMap((p) => {
+    const m = byId(p.id);
+    const steps = m ? thawSchedule(m, new Date(p.dinnerAt)) : [];
+    return m && steps.length > 0 ? [{ id: p.id, dish: m.recipe.title, alerted: Boolean(p.alerted), steps }] : [];
+  });
+  useThawAlerts(thawRows, now, cookPlan.markAlerted);
+
+  const potMatch = byId(potFor ?? undefined);
+  const plannedMeal = cookPlan.planned.find((p) => p.id === potFor);
+  const potStart = plannedMeal ? { hour: new Date(plannedMeal.dinnerAt).getHours(), minute: new Date(plannedMeal.dinnerAt).getMinutes() } : dinnerTime(profiles.active.dinner);
+
+  // "It's out": the items come out of the freezer into the fridge, so the reminder clears by itself.
+  function itsOut(steps: ThawStep[], dish: string) {
+    setGroceries((prev) => thawedOut(prev, steps.map((s) => s.item.id), todayIso()));
+    flash(`Moved ${steps.map((s) => s.item.name).join(", ")} to the Fridge for ${dish}.`, 4000);
+  }
   const opened = byId(view?.id);
 
   // Subtract what the recipe used; anything Sous can't work out is handed to the person.
@@ -96,7 +118,7 @@ function Kitchen({ profiles }: { profiles: ReturnType<typeof useProfiles> }) {
   return (
     <ClassicsContext.Provider value={classics}>
     <SavedRecipesContext.Provider value={savedRecipes}>
-    <CookPlanContext.Provider value={cookPlan}>
+    <CookPlanContext.Provider value={{ isPlanned: cookPlan.isPlanned, openPot: (m) => setPotFor(m.recipe.id) }}>
     <ProfilePrefsContext.Provider value={{ household: profiles.active.household, units: profiles.active.units, organic: profiles.active.organic }}>
     <div className={`app ${cook.cooking ? "cooking" : ""} ${SUGGESTION_MODE ? "suggest-mode" : ""}`}>
       <header className="top">
@@ -105,7 +127,7 @@ function Kitchen({ profiles }: { profiles: ReturnType<typeof useProfiles> }) {
 
       <main>
         <ExpiryBanner alerts={alerts} onFridge={() => goTo("pantry")} />
-        <ThawBanner planned={plannedMatches} alerts={alerts} onDone={cookPlan.unplan} />
+        <ThawBanner rows={thawRows} now={now} alerts={alerts} onOut={itsOut} onCancel={cookPlan.unplan} />
         {opened ? (
           <RecipeScreen match={opened} classics={classics} cook={cook} onBack={() => setView(null)} onComplete={complete} />
         ) : (
@@ -132,6 +154,17 @@ function Kitchen({ profiles }: { profiles: ReturnType<typeof useProfiles> }) {
       )}
 
       {finishUp.length > 0 && <FinishUp rows={finishUp} groceries={groceries} setGroceries={setGroceries} onClose={() => setFinishUp([])} />}
+
+      {potMatch && (
+        <DinnerDialog
+          dish={potMatch.recipe.title}
+          start={potStart}
+          planned={cookPlan.isPlanned(potMatch.recipe.id)}
+          onConfirm={(t) => { cookPlan.plan(potMatch, t); setPotFor(null); }}
+          onCancelPlan={() => { cookPlan.unplan(potMatch.recipe.id); setPotFor(null); }}
+          onClose={() => setPotFor(null)}
+        />
+      )}
 
       {toast && (
         <div className="toast" role="status">

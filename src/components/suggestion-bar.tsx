@@ -3,6 +3,7 @@ import { StoreFinder } from "@/components/store-finder";
 import { PotIcon, StarIcon } from "@/components/marks";
 import { DishRecipes } from "@/components/dish-recipes";
 import { SEED_RECIPES } from "@/data/seed-recipes";
+import { needsFreezerItems } from "@/lib/freezer-foods";
 import { useCookPlanContext } from "@/lib/cook-plan-context";
 import { useClassicsContext } from "@/lib/classics-context";
 import { coverBackground, coverInk } from "@/lib/cover";
@@ -36,7 +37,7 @@ export function SuggestionBar({ match: m, plain }: Props) {
   const wished = classics.wish.includes(id);
   const { household } = useProfilePrefs();
   const plan = useCookPlanContext();
-  const planned = plan.planned.includes(m.recipe.id);
+  const planned = plan.isPlanned(m.recipe.id);
   const status = m.usesExpiring.length > 0 ? `Uses up ${m.usesExpiring.slice(0, 2).map((g) => g.name).join(" & ")}` : readiness(m).text;
   const note = `${status} · ${servingsNote(m.recipe.servings, household)}`;
 
@@ -77,9 +78,11 @@ export function SuggestionBar({ match: m, plain }: Props) {
             <button className={`icon ${wished ? "on" : ""}`} aria-pressed={wished} disabled={liked} onClick={() => wish(id)} aria-label={wished ? "Remove from Wishlist" : "Add to Wishlist"}>
               {wished ? "✓" : "+"}
             </button>
-            <button className={`icon ${planned ? "on" : ""}`} aria-pressed={planned} onClick={() => plan.toggle(m)} aria-label={planned ? "Not cooking this" : "I'm going to cook this"} title={planned ? "Planned" : "I'm going to cook this"}>
-              <PotIcon />
-            </button>
+            {needsFreezerItems(m.recipe) && (
+              <button className={`icon ${planned ? "on" : ""}`} aria-pressed={planned} onClick={() => plan.openPot(m)} aria-label={planned ? "Cooking this: change dinner time" : "I'm going to cook this"} title={planned ? "Planned" : "I'm going to cook this"}>
+                <PotIcon />
+              </button>
+            )}
           </div>
         </div>
       )}

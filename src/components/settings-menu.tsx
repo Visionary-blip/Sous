@@ -1,4 +1,5 @@
 import { useState, type CSSProperties, type FormEvent } from "react";
+import { DinnerSettings } from "@/components/dinner-settings";
 import { bubbleColor } from "@/lib/bubble-colors";
 import type { UnitSystem } from "@/lib/convert-units";
 import { DIET_IDS, DIET_RULES } from "@/lib/diets";
@@ -200,6 +201,7 @@ export function SettingsMenu({ api }: { api: Api }) {
           <DietPicker api={api} />
           <AvoidList api={api} />
           <HomeSettings api={api} />
+          <DinnerSettings profile={api.active} onCustom={api.setDinnerCustom} onTime={api.setDinnerTime} />
           <AddProfile onAdd={api.add} />
         </div>
       )}
