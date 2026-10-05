@@ -19,6 +19,8 @@ import { scopeOf } from "@/lib/profiles";
 import { useProfiles } from "@/lib/use-profiles";
 import { useClassics } from "@/lib/use-classics";
 import { useSavedRecipes } from "@/lib/use-saved-recipes";
+import { ExpiryBanner } from "@/components/expiry-banner";
+import { useExpiryAlerts } from "@/lib/use-expiry-alerts";
 import { useCooking } from "@/lib/use-cooking";
 import { withGroups } from "./lib/food-groups";
 import { Pantry } from "./components/pantry";
@@ -46,6 +48,7 @@ function Kitchen({ profiles }: { profiles: ReturnType<typeof useProfiles> }) {
   const classics = useClassics();
   const savedRecipes = useSavedRecipes();
   const cook = useCooking();
+  const alerts = useExpiryAlerts(groceries);
   const [finishUp, setFinishUp] = useState<FinishUpRow[]>([]);
 
   function flash(msg: string, ms = 2500) {
@@ -95,6 +98,7 @@ function Kitchen({ profiles }: { profiles: ReturnType<typeof useProfiles> }) {
       </header>
 
       <main>
+        <ExpiryBanner alerts={alerts} onFridge={() => goTo("pantry")} />
         {opened ? (
           <RecipeScreen match={opened} classics={classics} cook={cook} onBack={() => setView(null)} onComplete={complete} />
         ) : (

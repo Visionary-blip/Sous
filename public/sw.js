@@ -1,5 +1,5 @@
 // Bump VERSION to drop every old cache on the next visit.
-const VERSION = "sous-v4";
+const VERSION = "sous-v5";
 const FONT_HOSTS = ["fonts.googleapis.com", "fonts.gstatic.com"];
 
 self.addEventListener("install", (event) => {
@@ -65,3 +65,14 @@ async function staleWhileRevalidate(request) {
     .catch(() => cached ?? Response.error());
   return cached ?? refresh;
 }
+
+// Tapping a use-by alert brings Sous forward, or opens it if it was closed.
+self.addEventListener("notificationclick", (event) => {
+  event.notification.close();
+  event.waitUntil(
+    self.clients.matchAll({ type: "window", includeUncontrolled: true }).then((windows) => {
+      const open = windows[0];
+      return open ? open.focus() : self.clients.openWindow("/");
+    }),
+  );
+});

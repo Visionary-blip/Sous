@@ -1423,3 +1423,36 @@ button.icon.on {
   background: var(--bub);
   color: #04101f;
 }
+
+/* Use-by notice under the title: tinted like the Fridge badges. */
+.expiry-banner {
+  margin: 0 0 12px;
+  padding: 10px 14px;
+  border: 1px solid var(--warn);
+  border-radius: 12px;
+  background: var(--warn-soft);
+  color: var(--warn);
+  font-size: 0.9rem;
+}
+
+.expiry-banner.danger {
+  border-color: var(--danger);
+  background: var(--danger-soft);
+  color: var(--danger);
+}
+
+.expiry-banner p {
+  margin: 0 0 8px;
+}
+
+.expiry-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.expiry-actions button {
+  font-size: 0.85rem;
+  padding: 4px 12px;
+  border-radius: 999px;
+}

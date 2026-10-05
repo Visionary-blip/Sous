@@ -26,3 +26,13 @@ export function expiringSoon(groceries: GroceryItem[], today: Date): GroceryItem
     .filter((g) => isExpiringSoon(g, today))
     .sort((a, b) => (a.expiresOn ?? "").localeCompare(b.expiresOn ?? ""));
 }
+
+/** Alerts use a tighter window than the 3-day "Expiring soon" deck (owner, 2026-10-04). */
+export const ALERT_DAYS = 2;
+
+/** Groceries due within ALERT_DAYS, expired ones included, most urgent first. */
+export function dueSoon(groceries: GroceryItem[], today: Date): GroceryItem[] {
+  return groceries
+    .filter((g) => g.expiresOn !== undefined && daysUntil(g.expiresOn, today) <= ALERT_DAYS)
+    .sort((a, b) => (a.expiresOn ?? "").localeCompare(b.expiresOn ?? ""));
+}
